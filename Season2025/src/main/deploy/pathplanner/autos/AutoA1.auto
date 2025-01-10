@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dejar Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Agarrar Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
