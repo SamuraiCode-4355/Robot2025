@@ -7,11 +7,7 @@ public class Conversions {
     public static double encToDegrees(double value, boolean inverted){
 
         value*= 360;
-
-        if(inverted){
-            value*= -1;
-        }
-        
+        value *= inverted ? -1 : 1;
         return value;
     }
 
