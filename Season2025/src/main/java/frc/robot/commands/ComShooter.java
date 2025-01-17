@@ -1,13 +1,19 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SubLeds;
 import frc.robot.subsystems.SubShooter;
 
 public class ComShooter extends Command {
 
-  public ComShooter() {
+  private BooleanSupplier rightB;
 
-    addRequirements(SubShooter.GetInstance());
+  public ComShooter(BooleanSupplier RightB) {
+
+    addRequirements(SubShooter.GetInstance(), SubLeds.getInstance());
+    this.rightB = RightB;
   }
 
   @Override
@@ -16,13 +22,22 @@ public class ComShooter extends Command {
   @Override
   public void execute() {
 
-    SubShooter.GetInstance().Shoot();
+    if(rightB.getAsBoolean()){
+
+      SubShooter.GetInstance().Shoot();
+      SubLeds.getInstance().ledBlue();
+    }
+    else{
+
+      SubShooter.GetInstance().suction();
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
 
     SubShooter.GetInstance().Stop();
+    SubLeds.getInstance().ledOff();
   }
 
   @Override

@@ -106,7 +106,7 @@ public class SubSwerve extends SubsystemBase {
 
   public double getHeading(){
 
-    return Math.IEEEremainder(m_Gyro.getYaw().getValueAsDouble(),360);
+    return Math.IEEEremainder(m_Gyro.getYaw().getValueAsDouble(), 360);
   }
 
   public Rotation2d robotOrientation(){

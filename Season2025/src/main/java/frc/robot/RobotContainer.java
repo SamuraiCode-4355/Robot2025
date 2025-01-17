@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.commands.ComAccommodation;
 import frc.robot.commands.ComLedBlue;
 import frc.robot.commands.ComLedwhite;
 import frc.robot.commands.ComShooter;
@@ -45,18 +46,17 @@ public class RobotContainer {
                                                                        () -> ControlDrive.getRightX()));
 
     ControlDrive.x().whileTrue(new InstantCommand(() -> SubSwerve.getInstance().resetGyro()));
-   // ControlDrive.leftBumper().whileTrue(new ComAccommodation("LEFT"));
-   // ControlDrive.rightBumper().whileTrue(new ComAccommodation("RIGHT"));
+    //ControlDrive.leftBumper().whileTrue(new ComAccommodation());
    // ControlDrive.y().onTrue(new ComTurn180());
-    ControlDrive.b().whileTrue(new ComShooter());
+    ControlDrive.leftBumper().whileTrue(new ComShooter(() -> ControlDrive.rightBumper().getAsBoolean()));
+    ControlDrive.rightBumper().whileTrue(new ComShooter(() -> ControlDrive.rightBumper().getAsBoolean()));
 
-    ControlMeca.pov(270).whileTrue(new InstantCommand(() -> Configure.setSide(1)));
-    ControlMeca.pov(90).whileTrue(new InstantCommand(() -> Configure.setSide(2)));
-    ControlMeca.a().whileTrue(new InstantCommand(() -> Configure.setLevel(1)));
-    ControlMeca.b().whileTrue(new InstantCommand(() -> Configure.setLevel(2)));
-    ControlMeca.y().whileTrue(new InstantCommand(() -> Configure.setLevel(3)));
+    ControlMeca.pov(270).whileTrue(new InstantCommand(() -> Configure.setSide((byte) 1)));
+    ControlMeca.pov(90).whileTrue(new InstantCommand(() -> Configure.setSide((byte) 2)));
+    ControlMeca.a().whileTrue(new InstantCommand(() -> Configure.setLevel((byte) 1)));
+    ControlMeca.b().whileTrue(new InstantCommand(() -> Configure.setLevel((byte) 2)));
+    ControlMeca.y().whileTrue(new InstantCommand(() -> Configure.setLevel((byte) 3)));
   }
-  
 
   public Command getAutonomousCommand() {
 

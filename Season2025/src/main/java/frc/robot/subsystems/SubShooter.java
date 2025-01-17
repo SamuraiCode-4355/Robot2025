@@ -29,7 +29,12 @@ public class SubShooter extends SubsystemBase {
 
   public void Shoot(){
 
-    M1.set(0.5);
+    M1.set(0.8);
+  }
+
+  public void suction(){
+
+    M1.set(-0.5);
   }
 
   public void Stop(){
