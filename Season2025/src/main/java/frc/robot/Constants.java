@@ -6,35 +6,35 @@ public final class Constants {
 
   public static class SwerveConts {
 
-    public static final int KFLDriveID = 1;
-    public static final int KBLDriveID = 3;
-    public static final int KFRDriveID = 5;
-    public static final int KBRDriveID = 7;
+    public static final int kFLDriveID = 3;
+    public static final int kFRDriveID = 1;
+    public static final int kBLDriveID = 7;
+    public static final int kBRDriveID = 5;
 
-    public static final int KFLTurnID = 2;
-    public static final int KBLTurnID = 4;
-    public static final int KFRTurnID = 6;
-    public static final int KBRTurnID = 8;
+    public static final int kFLTurnID = 4;
+    public static final int kFRTurnID = 2;
+    public static final int kBLTurnID = 8;
+    public static final int kBRTurnID = 6;
 
-    public static final int KFLEncoderID = 21;
-    public static final int KBLEncoderID = 22;
-    public static final int KFREncoderID = 23;
-    public static final int KBREncoderID = 24;
+    public static final int kFLEncoderID = 22;
+    public static final int kFREncoderID = 21;
+    public static final int kBLEncoderID = 24;
+    public static final int kBREncoderID = 23;
 
-    public static final boolean KFLDriveInverted = false;
-    public static final boolean KBLDriveInverted = false;
-    public static final boolean KFRDriveInverted = true;
-    public static final boolean KBRDriveInverted = false;
+    public static final boolean kFLDriveInverted = false;
+    public static final boolean kFRDriveInverted = false;
+    public static final boolean kBLDriveInverted = false;
+    public static final boolean kBRDriveInverted = true;
 
-    public static final boolean KFLTurnInverted = false;
-    public static final boolean KBLTurnInverted = false;
-    public static final boolean KFRTurnInverted = false;
-    public static final boolean KBRTurnInverted = false;
+    public static final boolean kFLTurnInverted = false;
+    public static final boolean kFRTurnInverted = false;
+    public static final boolean kBLTurnInverted = false;
+    public static final boolean kBRTurnInverted = false;
 
-    public static final boolean KFLEncoderInverted = false;
-    public static final boolean KBLEncoderInverted = false;
-    public static final boolean KFREncoderInverted = false;
-    public static final boolean KBREncoderInverted = false;
+    public static final boolean kFLEncoderInverted = false;
+    public static final boolean kFREncoderInverted = false;
+    public static final boolean kBLEncoderInverted = false;
+    public static final boolean kBREncoderInverted = false;
 
     public static final int KGiroID = 25;
 
@@ -67,5 +67,10 @@ public final class Constants {
         -distanceLeft_Right / 2);
 
     public static final int kLedPort = 0;
+  }
+
+  public static class ShootConstant{
+
+    public static final int KM1 = 10;
   }
 }

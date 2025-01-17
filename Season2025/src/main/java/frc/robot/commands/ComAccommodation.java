@@ -53,11 +53,17 @@ public class ComAccommodation extends Command {
 
       mPIDta.setSetpoint(5.45);
       mPIDtx.setSetpoint(9.8);
+      LimelightHelpers.setLEDMode_PipelineControl("");
+      LimelightHelpers.setLEDMode_ForceBlink("");
+
     }
     else if(side == "RIGHT"){
 
       mPIDta.setSetpoint(5.6);
       mPIDtx.setSetpoint(-18);
+      LimelightHelpers.setLEDMode_PipelineControl("");
+      LimelightHelpers.setLEDMode_ForceBlink("");
+
     }
     else{
 

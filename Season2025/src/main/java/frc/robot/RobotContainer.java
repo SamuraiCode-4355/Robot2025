@@ -1,10 +1,10 @@
 package frc.robot;
 
-import frc.robot.commands.ComAccommodation;
 import frc.robot.commands.ComLedBlue;
 import frc.robot.commands.ComLedwhite;
+import frc.robot.commands.ComShooter;
 import frc.robot.commands.ComSwerve;
-import frc.robot.commands.ComTurn180;
+import frc.robot.math.Configure;
 import frc.robot.subsystems.SubSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
 
-  private final CommandXboxController ControlDrive = new CommandXboxController(0);
+  private CommandXboxController ControlDrive = new CommandXboxController(0);
+  private CommandXboxController ControlMeca = new CommandXboxController(1);
   private SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
@@ -44,9 +45,16 @@ public class RobotContainer {
                                                                        () -> ControlDrive.getRightX()));
 
     ControlDrive.x().whileTrue(new InstantCommand(() -> SubSwerve.getInstance().resetGyro()));
-    ControlDrive.leftBumper().whileTrue(new ComAccommodation("LEFT"));
-    ControlDrive.rightBumper().whileTrue(new ComAccommodation("RIGHT"));
-    ControlDrive.y().onTrue(new ComTurn180());
+   // ControlDrive.leftBumper().whileTrue(new ComAccommodation("LEFT"));
+   // ControlDrive.rightBumper().whileTrue(new ComAccommodation("RIGHT"));
+   // ControlDrive.y().onTrue(new ComTurn180());
+    ControlDrive.b().whileTrue(new ComShooter());
+
+    ControlMeca.pov(270).whileTrue(new InstantCommand(() -> Configure.setSide(1)));
+    ControlMeca.pov(90).whileTrue(new InstantCommand(() -> Configure.setSide(2)));
+    ControlMeca.a().whileTrue(new InstantCommand(() -> Configure.setLevel(1)));
+    ControlMeca.b().whileTrue(new InstantCommand(() -> Configure.setLevel(2)));
+    ControlMeca.y().whileTrue(new InstantCommand(() -> Configure.setLevel(3)));
   }
   
 

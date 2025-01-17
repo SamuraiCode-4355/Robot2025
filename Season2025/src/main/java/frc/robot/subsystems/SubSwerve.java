@@ -5,7 +5,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants.RobotConst;
 import frc.robot.Constants.SwerveConts;
 import frc.robot.math.Conversions;
@@ -38,23 +36,24 @@ public class SubSwerve extends SubsystemBase {
 
   private ChassisSpeeds currentChassisState;
   private double robotVelocity;
+ // private double[] robotPose;
 
   private Pigeon2 m_Gyro;
   private RobotConfig config;
 
   public SubSwerve() {
 
-    m_FL = new SwerveModule(SwerveConts.KFLDriveID, SwerveConts.KFLTurnID, SwerveConts.KFLEncoderID,
-      SwerveConts.KFLDriveInverted, SwerveConts.KFLTurnInverted, SwerveConts.KFLEncoderInverted);
+    m_FL = new SwerveModule(SwerveConts.kFLDriveID, SwerveConts.kFLTurnID, SwerveConts.kFLEncoderID,
+      SwerveConts.kFLDriveInverted, SwerveConts.kFLTurnInverted, SwerveConts.kFLEncoderInverted);
 
-    m_FR = new SwerveModule(SwerveConts.KFRDriveID, SwerveConts.KFRTurnID, SwerveConts.KFREncoderID, 
-     SwerveConts.KFRDriveInverted, SwerveConts.KFRTurnInverted, SwerveConts.KFREncoderInverted);
+    m_FR = new SwerveModule(SwerveConts.kFRDriveID, SwerveConts.kFRTurnID, SwerveConts.kFREncoderID, 
+     SwerveConts.kFRDriveInverted, SwerveConts.kFRTurnInverted, SwerveConts.kFREncoderInverted);
 
-    m_BL = new SwerveModule(SwerveConts.KBLDriveID,  SwerveConts.KBLTurnID, SwerveConts.KBLEncoderID, 
-     SwerveConts.KBLDriveInverted, SwerveConts.KBLTurnInverted, SwerveConts.KBLEncoderInverted);
+    m_BL = new SwerveModule(SwerveConts.kBLDriveID,  SwerveConts.kBLTurnID, SwerveConts.kBLEncoderID, 
+     SwerveConts.kBLDriveInverted, SwerveConts.kBLTurnInverted, SwerveConts.kBLEncoderInverted);
 
-    m_BR = new SwerveModule(SwerveConts.KBRDriveID, SwerveConts.KBRTurnID, SwerveConts.KBREncoderID, 
-     SwerveConts.KBRDriveInverted, SwerveConts.KBRTurnInverted, SwerveConts.KBREncoderInverted);
+    m_BR = new SwerveModule(SwerveConts.kBRDriveID, SwerveConts.kBRTurnID, SwerveConts.kBREncoderID, 
+     SwerveConts.kBRDriveInverted, SwerveConts.kBRTurnInverted, SwerveConts.kBREncoderInverted);
 
     kinematics = new SwerveDriveKinematics(RobotConst.m_FL_Location, RobotConst.m_FR_Location,
       RobotConst.m_BL_Location, RobotConst.m_BR_Location);
@@ -88,7 +87,7 @@ public class SubSwerve extends SubsystemBase {
       () -> kinematics.toChassisSpeeds(getModuleStates()),
       this::setChassisSpeed,
       new PPHolonomicDriveController(
-        new PIDConstants(1.35, 0.0, 0.0), //0.006  Traslado Desente -- 0.0006
+        new PIDConstants(1.8, 0.0, 0.0), //0.006  Traslado Desente -- 0.0006
         new PIDConstants(1, 0.0, 0.0)), //0.002 Rotancion Desente -- 0.00002
       config,
       () -> false,
@@ -252,7 +251,15 @@ public class SubSwerve extends SubsystemBase {
 
     SmartDashboard.putNumber("Robot M/S", getRobotVelocity());
 
-    if(!(LimelightHelpers.getSetP_Orientation("") == null))
+    /*if(!(LimelightHelpers.getSetP_Orientation("") == null))
       SmartDashboard.putNumber("SetP Orientation", LimelightHelpers.getSetP_Orientation(""));
+
+    robotPose = LimelightHelpers.getBotPose("");
+
+    if(!(robotPose == null)){
+
+      SmartDashboard.putNumber("x Pose", robotPose[0]);
+      SmartDashboard.putNumber("y Pose", robotPose[1]);
+    }*/
   }
 }

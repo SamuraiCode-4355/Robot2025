@@ -11,21 +11,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Dejar Coral"
+            "pathName": "C2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "C2 Especial"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Agarrar Coral"
+            "pathName": "C3"
           }
         }
       ]
