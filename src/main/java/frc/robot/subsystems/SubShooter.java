@@ -44,7 +44,9 @@ public class SubShooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     SmartDashboard.putNumber("Level", Configure.getLevel());
-    SmartDashboard.putNumber("Lado",Configure.getSide());
+    SmartDashboard.putNumber("Side",Configure.getSide());
+    SmartDashboard.putNumber("Side Reef", Configure.getSideReef());
   }
 }

@@ -7,11 +7,7 @@ public class Conversions {
     public static double encToDegrees(double value, boolean inverted){
 
         value*= 360;
-
-        if(inverted){
-            value*= -1;
-        }
-        
+        value *= inverted ? -1 : 1;
         return value;
     }
 
@@ -33,5 +29,15 @@ public class Conversions {
 
         double headingRev = heading += (heading < 0) ? 180 : -180;
         return headingRev; 
+    }
+
+    public static double[] coordinates(double[] coordinates){
+
+        if(RobotConst.redAlliance){
+
+            coordinates[0] *= -1;
+            coordinates[1] *= -1;    
+        }
+        return coordinates;
     }
 }
