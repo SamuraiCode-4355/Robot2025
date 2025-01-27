@@ -2,65 +2,90 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
 import frc.robot.math.Configure;
-import frc.robot.math.Conversions;
 import frc.robot.subsystems.SubSwerve;
 
 public class ComCoordinates extends Command {
 
+  private boolean finish;
+  private PIDController mPIDx;
+  private PIDController mPIDy;
   private PIDController mPIDturn;
-  private PIDController mPIDtx;
-  private PIDController mPIDty;
 
   private float setPTurn;
   private float setPx;
   private float setPy;
 
+  private double[] currentCoord;
 
-  
   public ComCoordinates() {
 
     addRequirements(SubSwerve.getInstance());
+
+    mPIDx = new PIDController(0, 0, 0);
+    mPIDy = new PIDController(0, 0, 0);
+    mPIDturn = new PIDController(0, 0, 0);
+
+    mPIDx.setTolerance(0);
+    mPIDy.setTolerance(0);
+    mPIDturn.setTolerance(0);
+
+    currentCoord = new double[2];
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+    currentCoord =  LimelightHelpers.getBotPose("");
+    if(Math.abs(currentCoord[0]) < 1)
+      finish = true;
+  }
 
   @Override
   public void execute() {
+
+    if(Math.abs(currentCoord[0] - LimelightHelpers.getBotPose("")[0]) < 1){
+
+      currentCoord[0] = LimelightHelpers.getBotPose("")[0];
+    }
 
 
     switch(Configure.getSideReef()){
 
       case 1: 
-      System.out.print("Ir a coral");
+
       break;
       case 2:
-      System.out.print("Se quemo el robot xd");
+
       break;
       case 3:
-      System.out.print("Ganamos y nos vamos al mundial");
+
       break;
       case 4:
-      System.out.print("Nos Despertamos y lloramos");
+
       break;
       case 5: 
-      System.out.print("Pedro typec se burla de nosotros por no saber programar un PID");
+
       break;
       case 6: 
-      System.out.print("Tecno ravens nos gana y va al mundial y lloramos");
+
       break;
-      default :
-      System.out.print("No hizo nada");
+      default:
+        finish = true;
       break;
     }
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    SubSwerve.getInstance().stop();
+    finish = false;
+  }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return finish;
   }
 }

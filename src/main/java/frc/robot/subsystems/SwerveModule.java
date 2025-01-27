@@ -7,13 +7,12 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.RobotConst;
-import frc.robot.Constants.SwerveConts;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.math.Conversions;
 
 public class SwerveModule {
@@ -39,11 +38,11 @@ public class SwerveModule {
     private double velDrive;
     private double velTurn;
 
-    public SwerveModule(int DriveID, int TurnID,int EncoderID,
+    public SwerveModule(byte DriveID, byte TurnID,byte EncoderID,
          boolean DriveInv, boolean TurnInv, boolean EncoderInv){
 
-        m_Turn = new SparkMax(TurnID, MotorType.kBrushless);
         m_Drive = new SparkMax(DriveID, MotorType.kBrushless);
+        m_Turn = new SparkMax(TurnID, MotorType.kBrushless);
 
         mDriveConfig = new SparkMaxConfig();
         mTurnConfig = new SparkMaxConfig();
@@ -58,8 +57,8 @@ public class SwerveModule {
         
         m_Encoder = new CANcoder(EncoderID);
         
-        m_DrivePID = new PIDController(SwerveConts.K_P_PID_Drive, SwerveConts.K_I_PID_Drive, SwerveConts.K_D_PID_Drive);
-        m_TurnPID = new PIDController(SwerveConts.K_P_PID_Turn, 0, 0);
+        m_DrivePID = new PIDController(SwerveConstants.kP_PID_Drive, SwerveConstants.kI_PID_Drive, SwerveConstants.kD_PID_Drive);
+        m_TurnPID = new PIDController(SwerveConstants.kP_PID_Turn, 0, 0);
 
         m_DrivePID.setTolerance(0.5);
         m_TurnPID.setTolerance(0.2);
@@ -72,7 +71,7 @@ public class SwerveModule {
 
     private double EncDegrees(){
 
-        return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(),mEncInv);
+        return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(), mEncInv);
     }
 
     private double speedMPerSecond(){
@@ -90,7 +89,7 @@ public class SwerveModule {
         newState.optimize(getActualState().angle);
         newState.speedMetersPerSecond *= newState.angle.minus(getActualState().angle).getCos();
 
-        setPointDrive = newState.speedMetersPerSecond * RobotConst.power;
+        setPointDrive = newState.speedMetersPerSecond * RobotConstants.kPower;
         setPointTurn = newState.angle.getDegrees();
 
         m_DrivePID.setSetpoint(setPointDrive);

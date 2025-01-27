@@ -5,41 +5,41 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShootConstant;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.math.Configure;
 
 public class SubShooter extends SubsystemBase {
 
-  private SparkMax M1;
-  private static SubShooter Instance;
+  private SparkMax mShooter;
+  private static SubShooter instance;
 
   public SubShooter() {
 
-    M1 = new SparkMax(ShootConstant.KM1, MotorType.kBrushed);
+    mShooter = new SparkMax(ShooterConstants.kShooterID, MotorType.kBrushed);
   }
 
-  public static SubShooter GetInstance(){
+  public static SubShooter getInstance(){
 
-    if(Instance == null){
+    if(instance == null){
 
-      Instance = new SubShooter();
+      instance = new SubShooter();
     }
-    return Instance;
+    return instance;
   }
 
-  public void Shoot(){
+  public void shoot(){
 
-    M1.set(0.8);
+    mShooter.set(0.65);
   }
 
   public void suction(){
 
-    M1.set(-0.5);
+    mShooter.set(-0.5);
   }
 
-  public void Stop(){
+  public void stop(){
 
-    M1.set(0);
+    mShooter.set(0);
   }
 
   @Override

@@ -1586,41 +1586,42 @@ public class LimelightHelpers {
 
         return results;
     }
+//-----------------------------------------------------------------------------------
 
     public static void enabledAllIDs(){
 
-        int[] AllIDS = new int[26];
+        int[] allIDs = new int[26];
             
         for(int i = 0; i <= 26; i++){
 
-            AllIDS[i] = i + 1;
+            allIDs[i] = i + 1;
         }
-        SetFiducialIDFiltersOverride("", AllIDS);
+        SetFiducialIDFiltersOverride("", allIDs);
     }
 
-    public static Double getSetP_Orientation(String limelightName){
+    public static Float getSetP_Orientation(String limelightName){
 
         int id = (int) getFiducialID(limelightName);
-        Double orientation;
+        Float orientation;
 
         switch (id) {
             case 7: case 18:
-                orientation = 0.0;
+                orientation = 0.0f;
             break;    
             case 8 : case 17:
-                orientation = 60.0;
+                orientation = 60.0f;
             break;
             case 9 : case 22:
-                orientation = 120.0;
+                orientation = 120.0f;
             break;
             case 10 : case 21:
-                orientation = 180.0;
+                orientation = 180.0f;
             break;
             case 11 : case 20:
-                orientation = -120.0;
+                orientation = -120.0f;
             break;
             case 6 : case 19:
-                orientation = -60.0;
+                orientation = -60.0f;
             break;     
             default:
                 orientation = null;

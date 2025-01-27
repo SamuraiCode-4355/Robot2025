@@ -1,8 +1,6 @@
 package frc.robot;
 
-import frc.robot.commands.ComAccommodation;
-import frc.robot.commands.ComLedBlue;
-import frc.robot.commands.ComLedwhite;
+import frc.robot.commands.AutoShooter;
 import frc.robot.commands.ComShooter;
 import frc.robot.commands.ComSwerve;
 import frc.robot.math.Configure;
@@ -31,11 +29,11 @@ public class RobotContainer {
       try {
           Thread.sleep(1000);
           autoChooser = AutoBuilder.buildAutoChooser();
-          NamedCommands.registerCommand("Dejar Coral", new ComLedBlue());
-          NamedCommands.registerCommand("Agarrar Coral", new ComLedwhite());
           SmartDashboard.putData("Auto Chooser", autoChooser);
       } catch (Exception e){}
     }).start();
+
+    NamedCommands.registerCommand("Shoot", new AutoShooter());
   }
 
   private void configureBindings() {

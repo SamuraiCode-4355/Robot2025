@@ -12,7 +12,7 @@ public class ComShooter extends Command {
 
   public ComShooter(BooleanSupplier RightB) {
 
-    addRequirements(SubShooter.GetInstance(), SubLeds.getInstance());
+    addRequirements(SubShooter.getInstance(), SubLeds.getInstance());
     this.rightB = RightB;
   }
 
@@ -24,19 +24,19 @@ public class ComShooter extends Command {
 
     if(rightB.getAsBoolean()){
 
-      SubShooter.GetInstance().Shoot();
+      SubShooter.getInstance().shoot();
       SubLeds.getInstance().ledBlue();
     }
     else{
 
-      SubShooter.GetInstance().suction();
+      SubShooter.getInstance().suction();
     }
   }
 
   @Override
   public void end(boolean interrupted) {
 
-    SubShooter.GetInstance().Stop();
+    SubShooter.getInstance().stop();
     SubLeds.getInstance().ledOff();
   }
 

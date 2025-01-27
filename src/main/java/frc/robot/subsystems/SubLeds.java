@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.RobotConst;
+import frc.robot.Constants.RobotConstants;
 
 public class SubLeds extends SubsystemBase {
 
@@ -11,7 +11,7 @@ public class SubLeds extends SubsystemBase {
 
   public SubLeds() {
 
-    m_Led = new Spark(RobotConst.kLedPort);
+    m_Led = new Spark(RobotConstants.kLedPort);
   }
 
   public static SubLeds getInstance(){
