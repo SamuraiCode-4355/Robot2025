@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.math.Conversions;
 
 public final class Constants {
 
@@ -44,6 +43,9 @@ public final class Constants {
     public static final float kD_PID_Drive = 0.001f;
 
     public static final float kP_PID_Turn = 0.003f;
+
+    public static final byte kLimitCurrentDrive = 35;
+    public static final byte kLimitCurrentTurn = 20;
   } 
 
   public static class RobotConstants {
@@ -74,11 +76,19 @@ public final class Constants {
 
   public static class ShooterConstants{
 
-    public static final byte kShooterID = 10;
+    public static final byte kShooterID = 9;
   }
 
   public static class FieldConstants{
 
-    public static final float[] kReefCenter = Conversions.coordinates(new float[]{-4.2f, 0.0f});
+   // public static final float[] kReefCenter = Conversions.coordinates(new float[]{-4.2f, 0.0f});
+
+    public static final float kTxLeft = 7.4f;
+    public static final float kTaLeft = 3.3f;
+
+    public static final float kTxRight = -15.4f;
+    public static final float kTaRight = 3.7f;
+
+    public static final float kDistanceFront = 0.44f;//36
   }
 }

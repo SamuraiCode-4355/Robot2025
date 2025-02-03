@@ -3,7 +3,6 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SubLeds;
 import frc.robot.subsystems.SubShooter;
 
 public class ComShooter extends Command {
@@ -12,7 +11,7 @@ public class ComShooter extends Command {
 
   public ComShooter(BooleanSupplier RightB) {
 
-    addRequirements(SubShooter.getInstance(), SubLeds.getInstance());
+    addRequirements(SubShooter.getInstance());
     this.rightB = RightB;
   }
 
@@ -25,7 +24,7 @@ public class ComShooter extends Command {
     if(rightB.getAsBoolean()){
 
       SubShooter.getInstance().shoot();
-      SubLeds.getInstance().ledBlue();
+     // SubLeds.getInstance().ledBlue();
     }
     else{
 
@@ -37,7 +36,7 @@ public class ComShooter extends Command {
   public void end(boolean interrupted) {
 
     SubShooter.getInstance().stop();
-    SubLeds.getInstance().ledOff();
+   // SubLeds.getInstance().ledOff();
   }
 
   @Override

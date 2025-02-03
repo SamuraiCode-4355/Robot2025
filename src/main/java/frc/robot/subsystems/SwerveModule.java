@@ -38,7 +38,7 @@ public class SwerveModule {
     private double velDrive;
     private double velTurn;
 
-    public SwerveModule(byte DriveID, byte TurnID,byte EncoderID,
+    public SwerveModule(byte DriveID, byte TurnID, byte EncoderID,
          boolean DriveInv, boolean TurnInv, boolean EncoderInv){
 
         m_Drive = new SparkMax(DriveID, MotorType.kBrushless);
@@ -47,8 +47,8 @@ public class SwerveModule {
         mDriveConfig = new SparkMaxConfig();
         mTurnConfig = new SparkMaxConfig();
 
-        mDriveConfig.inverted(DriveInv);
-        mTurnConfig.inverted(TurnInv);
+        mDriveConfig.inverted(DriveInv).smartCurrentLimit(SwerveConstants.kLimitCurrentDrive);
+        mTurnConfig.inverted(TurnInv).smartCurrentLimit(SwerveConstants.kLimitCurrentTurn);
 
         m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -60,7 +60,7 @@ public class SwerveModule {
         m_DrivePID = new PIDController(SwerveConstants.kP_PID_Drive, SwerveConstants.kI_PID_Drive, SwerveConstants.kD_PID_Drive);
         m_TurnPID = new PIDController(SwerveConstants.kP_PID_Turn, 0, 0);
 
-        m_DrivePID.setTolerance(0.5);
+       // m_DrivePID.setTolerance(0.5);
         m_TurnPID.setTolerance(0.2);
 
         m_TurnPID.enableContinuousInput(0, 180);
@@ -82,6 +82,11 @@ public class SwerveModule {
     public double getMetersTraveled(){
 
         return Conversions.driveTurnsToM(m_Drive.getEncoder().getPosition());
+    }
+
+    public void resetMetersTraveled(){
+
+        m_Drive.getEncoder().setPosition(0.0);
     }
 
     public void setDesiredState(SwerveModuleState newState){
@@ -129,6 +134,15 @@ public class SwerveModule {
 
         mDriveConfig.idleMode(IdleMode.kCoast);
         m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public void setLimitCurrent(byte limitCurrentDrive, byte limitCurrentTurn){
+
+        mDriveConfig.smartCurrentLimit(limitCurrentDrive);
+        mTurnConfig.smartCurrentLimit(limitCurrentTurn);
+
+        m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void setDrive(double speed){

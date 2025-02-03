@@ -41,6 +41,8 @@ public class SubSwerve extends SubsystemBase {
   private Pigeon2 m_Gyro;
   private RobotConfig config;
   private double setPSpeed;
+  private byte m_limitCurrentDrive;
+  private byte m_limitCurrentTurn;
 
   public SubSwerve() {
 
@@ -88,12 +90,15 @@ public class SubSwerve extends SubsystemBase {
       () -> kinematics.toChassisSpeeds(getModuleStates()),
       this::setChassisSpeed,
       new PPHolonomicDriveController(
-        new PIDConstants(2.8, 0.0, 0.0),  //1.8
-        new PIDConstants(3.8, 0.0, 0.0)), //2.8
+        new PIDConstants(2.2, 0.0, 0.0),  //2.8
+        new PIDConstants(3.0 , 0.0, 0.0)), //3.8
       config,
       () -> false,
       this 
     );  
+
+    m_limitCurrentDrive = SwerveConstants.kLimitCurrentDrive;
+    m_limitCurrentTurn = SwerveConstants.kLimitCurrentTurn;
   }
 
   public static SubSwerve getInstance(){
@@ -172,6 +177,19 @@ public class SubSwerve extends SubsystemBase {
     odometry.resetPosition(robotOrientationRev(), getModulePositions(), pose);
   }
 
+  public double getFL_MTraveled(){
+
+    return m_FL.getMetersTraveled();
+  }
+
+  public void resetMetersTraveled(){
+
+    m_FL.resetMetersTraveled();
+    m_FR.resetMetersTraveled();
+    m_BL.resetMetersTraveled();
+    m_BR.resetMetersTraveled();
+  }
+
   public void setBreak(){
 
     m_FL.setBreak();
@@ -206,6 +224,38 @@ public class SubSwerve extends SubsystemBase {
     m_BR.setDrive(speed);
   }
 
+  public void increaseCurrentDrive(){
+
+    m_limitCurrentDrive += 5;
+    setLimitCurrent();
+  }
+
+  public void decreaseCurrentDrive(){
+
+    m_limitCurrentDrive -= 5;
+    setLimitCurrent();
+  }
+
+  public void increaseCurrentTurn(){
+
+    m_limitCurrentTurn += 5;
+    setLimitCurrent();
+  }
+
+  public void decreaseCurrentTurn(){
+
+    m_limitCurrentTurn -= 5;
+    setLimitCurrent();
+  }
+
+  public void setLimitCurrent(){
+
+    m_FL.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
+    m_FR.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
+    m_BL.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
+    m_BR.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
+  }
+
   public void stop(){
 
     m_FL.stop();
@@ -217,7 +267,7 @@ public class SubSwerve extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if(!(odometry == null))
+    if(odometry != null)
       odometry.update(robotOrientationRev(), getModulePositions());
 
     double SwerveStates[] = {
@@ -256,9 +306,11 @@ public class SubSwerve extends SubsystemBase {
     SmartDashboard.putNumber("FL Voltage", m_FL.getVoltageDrive());
     SmartDashboard.putNumber("FR Voltage", m_FR.getVoltageDrive());
     SmartDashboard.putNumber("BL Voltage", m_BL.getVoltageDrive());
-    SmartDashboard.putNumber("BR   Voltage", m_BR .getVoltageDrive());
+    SmartDashboard.putNumber("BR Voltage", m_BR .getVoltageDrive());
 
     SmartDashboard.putNumber("Robot M/S", getRobotVelocity());
+    SmartDashboard.putNumber("Limit Current Drive", m_limitCurrentDrive);
+    SmartDashboard.putNumber("Limit Current Turn", m_limitCurrentTurn);
 
     /*if(!(LimelightHelpers.getSetP_Orientation("") == null))
       SmartDashboard.putNumber("SetP Orientation", LimelightHelpers.getSetP_Orientation(""));

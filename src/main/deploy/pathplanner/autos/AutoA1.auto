@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Right Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
           }
         },

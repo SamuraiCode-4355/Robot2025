@@ -1,5 +1,4 @@
 //LimelightHelpers v1.10 (REQUIRES LLOS 2024.9.1 OR LATER)
-
 package frc.robot;
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
@@ -1612,7 +1611,7 @@ public class LimelightHelpers {
                 orientation = 60.0f;
             break;
             case 9 : case 22:
-                orientation = 120.0f;
+                orientation = 0.0f;//120.0f;
             break;
             case 10 : case 21:
                 orientation = 180.0f;

@@ -1,8 +1,7 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -10,12 +9,12 @@ import frc.robot.math.Configure;
 
 public class SubShooter extends SubsystemBase {
 
-  private SparkMax mShooter;
+  private VictorSPX mShooter;
   private static SubShooter instance;
 
   public SubShooter() {
 
-    mShooter = new SparkMax(ShooterConstants.kShooterID, MotorType.kBrushed);
+    mShooter = new VictorSPX(ShooterConstants.kShooterID);
   }
 
   public static SubShooter getInstance(){
@@ -29,24 +28,23 @@ public class SubShooter extends SubsystemBase {
 
   public void shoot(){
 
-    mShooter.set(0.65);
+    mShooter.set(ControlMode.PercentOutput, -0.65);
   }
 
   public void suction(){
 
-    mShooter.set(-0.5);
+    mShooter.set(ControlMode.PercentOutput, 0.5);
   }
 
   public void stop(){
 
-    mShooter.set(0);
+    mShooter.set(ControlMode.PercentOutput, 0);
   }
 
   @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Level", Configure.getLevel());
-    SmartDashboard.putNumber("Side",Configure.getSide());
-    SmartDashboard.putNumber("Side Reef", Configure.getSideReef());
+    SmartDashboard.putNumber("Side", Configure.getSide());
   }
 }
