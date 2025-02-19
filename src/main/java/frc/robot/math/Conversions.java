@@ -1,5 +1,6 @@
 package frc.robot.math;
 
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RobotConstants;
 
 public class Conversions {
@@ -33,7 +34,7 @@ public class Conversions {
 
     public static float[] coordinates(float[] coordinates){
 
-        if(RobotConstants.redAlliance){
+        if(FieldConstants.redAlliance){
 
             coordinates[0] *= -1;
             coordinates[1] *= -1;    

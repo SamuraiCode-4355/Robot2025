@@ -13,8 +13,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.math.Conversions;
@@ -30,8 +32,6 @@ public class SubSwerve extends SubsystemBase {
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
 
-  //private Pose2d initialPose;
-  //private Rotation2d initialOrientation;
   private Rotation2d robotOrientation;
 
   private ChassisSpeeds currentChassisState;
@@ -43,6 +43,11 @@ public class SubSwerve extends SubsystemBase {
   private double setPSpeed;
   private byte m_limitCurrentDrive;
   private byte m_limitCurrentTurn;
+
+  private Timer cronoDrive;
+  private Timer cronoTurn;
+  private boolean cronoDriveRunning;
+  private boolean cronoTurnRunning;
 
   public SubSwerve() {
 
@@ -63,9 +68,6 @@ public class SubSwerve extends SubsystemBase {
 
     m_Gyro = new Pigeon2(SwerveConstants.kGyroID);
 
-   // initialPose = new Pose2d(7.994, 1.057, Rotation2d.fromDegrees(0));
-    //initialOrientation = Rotation2d.fromDegrees(0);
-
     try{
       
       config = RobotConfig.fromGUISettings();
@@ -74,7 +76,7 @@ public class SubSwerve extends SubsystemBase {
       e.printStackTrace();
     }
 
-    odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(),//initialOrientation, 
+    odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(),
       new SwerveModulePosition[]{
         new SwerveModulePosition(0, new Rotation2d()),
         new SwerveModulePosition(0, new Rotation2d()),
@@ -93,12 +95,15 @@ public class SubSwerve extends SubsystemBase {
         new PIDConstants(2.2, 0.0, 0.0),  //2.8
         new PIDConstants(3.0 , 0.0, 0.0)), //3.8
       config,
-      () -> false,
+      () -> FieldConstants.redAlliance,
       this 
     );  
 
     m_limitCurrentDrive = SwerveConstants.kLimitCurrentDrive;
     m_limitCurrentTurn = SwerveConstants.kLimitCurrentTurn;
+
+    cronoDrive = new Timer();
+    cronoTurn = new Timer();
   }
 
   public static SubSwerve getInstance(){
@@ -138,8 +143,8 @@ public class SubSwerve extends SubsystemBase {
 
   public double getRobotVelocity(){
 
-    currentChassisState = kinematics.toChassisSpeeds(m_FL.getActualState(), m_FR.getActualState(), 
-                                                     m_BL.getActualState(), m_BR.getActualState());
+    currentChassisState = kinematics.toChassisSpeeds(m_FL.getCurrentState(), m_FR.getCurrentState(), 
+                                                     m_BL.getCurrentState(), m_BR.getCurrentState());
                                                      
     robotVelocity = Math.hypot(currentChassisState.vyMetersPerSecond, currentChassisState.vxMetersPerSecond);
     return robotVelocity;
@@ -148,10 +153,10 @@ public class SubSwerve extends SubsystemBase {
   private SwerveModulePosition[] getModulePositions(){
 
     SwerveModulePosition[] modulePositions = {
-      new SwerveModulePosition(m_FL.getMetersTraveled(), m_FL.getActualState().angle),
-      new SwerveModulePosition(m_FR.getMetersTraveled(), m_FR.getActualState().angle),
-      new SwerveModulePosition(m_BL.getMetersTraveled(), m_BL.getActualState().angle),
-      new SwerveModulePosition(m_BR.getMetersTraveled(), m_BR.getActualState().angle)
+      new SwerveModulePosition(m_FL.getMetersTraveled(), m_FL.getCurrentState().angle),
+      new SwerveModulePosition(m_FR.getMetersTraveled(), m_FR.getCurrentState().angle),
+      new SwerveModulePosition(m_BL.getMetersTraveled(), m_BL.getCurrentState().angle),
+      new SwerveModulePosition(m_BR.getMetersTraveled(), m_BR.getCurrentState().angle)
     };
     return modulePositions;
   }
@@ -159,10 +164,10 @@ public class SubSwerve extends SubsystemBase {
   private SwerveModuleState[] getModuleStates(){
 
     SwerveModuleState[] moduleStates = {
-      m_FL.getActualState(),
-      m_FR.getActualState(),
-      m_BL.getActualState(),
-      m_BR.getActualState(),
+      m_FL.getCurrentState(),
+      m_FR.getCurrentState(),
+      m_BL.getCurrentState(),
+      m_BR.getCurrentState(),
     };
     return moduleStates;
   }
@@ -210,10 +215,10 @@ public class SubSwerve extends SubsystemBase {
 
     SwerveModuleState[] newStates = kinematics.toSwerveModuleStates(desiredSpeed);
 
-    m_FL.setDesiredState(newStates[0]);
-    m_FR.setDesiredState(newStates[1]);
-    m_BL.setDesiredState(newStates[2]);
-    m_BR.setDesiredState(newStates[3]);
+    m_FL.setM_DesiredState(newStates[0]);
+    m_FR.setM_DesiredState(newStates[1]);
+    m_BL.setM_DesiredState(newStates[2]);
+    m_BR.setM_DesiredState(newStates[3]);
   }
 
   public void setDrive(double speed){
@@ -271,14 +276,14 @@ public class SubSwerve extends SubsystemBase {
       odometry.update(robotOrientationRev(), getModulePositions());
 
     double SwerveStates[] = {
-      m_FL.getActualState().angle.getRadians(),
-      m_FL.getActualState().speedMetersPerSecond,
-      m_FR.getActualState().angle.getRadians(),
-      m_FR.getActualState().speedMetersPerSecond,
-      m_BL.getActualState().angle.getRadians(),
-      m_BL.getActualState().speedMetersPerSecond,
-      m_BR.getActualState().angle.getRadians(),
-      m_BR.getActualState().speedMetersPerSecond
+      m_FL.getCurrentState().angle.getRadians(),
+      m_FL.getCurrentState().speedMetersPerSecond,
+      m_FR.getCurrentState().angle.getRadians(),
+      m_FR.getCurrentState().speedMetersPerSecond,
+      m_BL.getCurrentState().angle.getRadians(),
+      m_BL.getCurrentState().speedMetersPerSecond,
+      m_BR.getCurrentState().angle.getRadians(),
+      m_BR.getCurrentState().speedMetersPerSecond
     };
 
     setPSpeed = m_FL.getDesiredState().speedMetersPerSecond +
@@ -286,17 +291,79 @@ public class SubSwerve extends SubsystemBase {
                 m_BL.getDesiredState().speedMetersPerSecond +
                 m_BR.getDesiredState().speedMetersPerSecond;
 
-    if(setPSpeed < 0.05)
+    SmartDashboard.putBoolean("setPoint 0", setPSpeed < 0.05);
+    SmartDashboard.putNumber("FL speed Dif", m_FL.getSpeedDifference());
+    SmartDashboard.putNumber("FL angle Dif", m_FL.getAngleDifference());
+    
+    if(setPSpeed < 0.05){
+
       stop();
+    }
+    else{
+
+      if(m_FL.getSpeedDifference() >= 0.3){
+
+        if(!cronoDriveRunning){
+
+          cronoDrive.reset();
+          cronoDrive.start();
+          cronoDriveRunning = true;
+        }
+
+        if(cronoDrive.get() >= 4){
+
+          increaseCurrentDrive();
+          cronoDrive.stop();
+          cronoDrive.reset();
+          cronoDriveRunning = false;
+        }
+      }
+      else{
+
+        if(cronoDriveRunning){
+
+          cronoDrive.stop();
+          cronoDrive.reset();
+          cronoDriveRunning = false;
+        }
+      }
+
+      if(m_FL.getAngleDifference() >= 10){
+
+        if(!cronoTurnRunning){
+
+          cronoTurn.reset();
+          cronoTurn.start();
+          cronoTurnRunning = true;
+        }
+
+        if(cronoTurn.get() >= 3){
+
+          increaseCurrentTurn();
+          cronoTurn.stop();
+          cronoTurn.reset();
+          cronoTurnRunning = false;
+        }
+      }
+      else{
+
+        if(cronoTurnRunning){
+
+          cronoTurn.stop();
+          cronoTurn.reset();
+          cronoTurnRunning = false;
+        }
+      }
+    }
 
     SmartDashboard.putNumberArray("Swerve States", SwerveStates);
     SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putNumber("Gyro Radians", Units.degreesToRadians(getHeading()));
 
-    SmartDashboard.putNumber("FL speed", m_FL.getActualState().speedMetersPerSecond);
-    SmartDashboard.putNumber("FR speed", m_FR.getActualState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BL speed", m_BL.getActualState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BR speed", m_BR.getActualState().speedMetersPerSecond);
+    SmartDashboard.putNumber("FL speed", m_FL.getCurrentState().speedMetersPerSecond);
+    SmartDashboard.putNumber("FR speed", m_FR.getCurrentState().speedMetersPerSecond);
+    SmartDashboard.putNumber("BL speed", m_BL.getCurrentState().speedMetersPerSecond);
+    SmartDashboard.putNumber("BR speed", m_BR.getCurrentState().speedMetersPerSecond);
 
     SmartDashboard.putNumber("FL SetP Speed", m_FL.getDesiredState().speedMetersPerSecond);
     SmartDashboard.putNumber("FR setP Speed", m_FR.getDesiredState().speedMetersPerSecond);

@@ -21,8 +21,8 @@ public final class Constants {
     public static final byte kBLEncoderID = 23;
     public static final byte kBREncoderID = 24;
 
-    public static final boolean kFLDriveInverted = false;
-    public static final boolean kFRDriveInverted = true;
+    public static final boolean kFLDriveInverted = true;
+    public static final boolean kFRDriveInverted = false;
     public static final boolean kBLDriveInverted = true;
     public static final boolean kBRDriveInverted = false;
 
@@ -50,8 +50,6 @@ public final class Constants {
 
   public static class RobotConstants {
 
-    public static final boolean redAlliance = false;
-
     public static final float kWheelRadio = 0.05f;
     public static final double kWheelLenght = 2 * Math.PI * kWheelRadio;
     public static final float kWheelTransmision = 6.75f;
@@ -74,21 +72,48 @@ public final class Constants {
     public static final byte kLedPort = 0;
   }
 
-  public static class ShooterConstants{
-
-    public static final byte kShooterID = 9;
-  }
-
   public static class FieldConstants{
 
    // public static final float[] kReefCenter = Conversions.coordinates(new float[]{-4.2f, 0.0f});
 
-    public static final float kTxLeft = 7.4f;
+    public static final float kTxLeft = 4.1f;
     public static final float kTaLeft = 3.3f;
 
-    public static final float kTxRight = -15.4f;
-    public static final float kTaRight = 3.7f;
+    public static final float kTxRight = -16.8f;
+    public static final float kTaRight = 4.6f;
 
-    public static final float kDistanceFront = 0.44f;//36
+    public static final float kDistanceFront = 0.45f;//45
+    public static final boolean redAlliance = false;
+  }
+
+  public static class ElevatorConstants{
+
+    public static final byte kLeftID = 9;
+    public static final byte kRightID = 10;
+    public static final byte kShooterID = 11;
+
+    public static final int kProximity = 400;
+
+    public static final float kLevel1 = 0f;//0
+    public static final float kLevel2 = 6.2f;//6.4
+    public static final float kLevel3 = 15.0f;//14.82
+
+    public static final byte kElevLimitCurrent = 35;
+    public static final byte kShooterLimitCurrent = 30;
+    public static final float maximumPower = 0.5f;
+  }
+
+  public static class ClimberConstants{
+
+    public static final byte kClimberID = 12;
+  }
+
+  public static class IntakeConstants{
+
+    public static final byte kJointID = 13;
+    public static final byte kSuctionID = 14;
+
+    public static final byte kJointLimitCurrent = 35;
+    public static final byte kSuctionLimitCurrent = 25;
   }
 }

@@ -2,24 +2,24 @@ package frc.robot.math;
 
 public class Configure {
     
-    private static byte side;
-    private static byte level;
+    private static int side;
+    private static int level;
     
-    public static byte getSide(){
+    public static int getSide(){
         return side;
     }
 
-    public static byte getLevel(){
+    public static int getLevel(){
         return level;
     }
 
-    public static void setSide(byte Side){
+    public static void setSide(int Side){
 
         if(Side == 1 || Side == 2)
             side = Side;
     }
 
-    public static void setLevel(byte Level){
+    public static void setLevel(int Level){
 
         if(Level >= 1 && Level <= 3)
             level = Level;

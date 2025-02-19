@@ -22,15 +22,15 @@ public class SwerveModule {
     private SparkMaxConfig mDriveConfig;
     private SparkMaxConfig mTurnConfig;
 
-    private boolean mEncInv;
+    private boolean m_EncInv;
 
     private CANcoder m_Encoder;
 
     private PIDController m_DrivePID;
     private PIDController m_TurnPID;
 
-    private SwerveModuleState actualState;
-    private SwerveModuleState desiredState;
+    private SwerveModuleState m_CurrentState;
+    private SwerveModuleState m_DesiredState;
 
     private double setPointDrive;
     private double setPointTurn;
@@ -39,7 +39,7 @@ public class SwerveModule {
     private double velTurn;
 
     public SwerveModule(byte DriveID, byte TurnID, byte EncoderID,
-         boolean DriveInv, boolean TurnInv, boolean EncoderInv){
+        boolean DriveInv, boolean TurnInv, boolean EncoderInv){
 
         m_Drive = new SparkMax(DriveID, MotorType.kBrushless);
         m_Turn = new SparkMax(TurnID, MotorType.kBrushless);
@@ -53,7 +53,7 @@ public class SwerveModule {
         m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        this.mEncInv = EncoderInv;
+        this.m_EncInv = EncoderInv;
         
         m_Encoder = new CANcoder(EncoderID);
         
@@ -65,13 +65,13 @@ public class SwerveModule {
 
         m_TurnPID.enableContinuousInput(0, 180);
 
-        actualState = new SwerveModuleState();
-        desiredState = new SwerveModuleState();
+        m_CurrentState = new SwerveModuleState();
+        m_DesiredState = new SwerveModuleState();
     }
 
     private double EncDegrees(){
 
-        return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(), mEncInv);
+        return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(), m_EncInv);
     }
 
     private double speedMPerSecond(){
@@ -89,10 +89,10 @@ public class SwerveModule {
         m_Drive.getEncoder().setPosition(0.0);
     }
 
-    public void setDesiredState(SwerveModuleState newState){
+    public void setM_DesiredState(SwerveModuleState newState){
 
-        newState.optimize(getActualState().angle);
-        newState.speedMetersPerSecond *= newState.angle.minus(getActualState().angle).getCos();
+        newState.optimize(getCurrentState().angle);
+        newState.speedMetersPerSecond *= newState.angle.minus(getCurrentState().angle).getCos();
 
         setPointDrive = newState.speedMetersPerSecond * RobotConstants.kPower;
         setPointTurn = newState.angle.getDegrees();
@@ -107,16 +107,16 @@ public class SwerveModule {
         m_Turn.set(velTurn);
     }  
 
-    public SwerveModuleState getActualState(){
+    public SwerveModuleState getCurrentState(){
 
-        actualState = new SwerveModuleState(speedMPerSecond(), new Rotation2d(Units.degreesToRadians(EncDegrees())));
-        return actualState;
+        m_CurrentState = new SwerveModuleState(speedMPerSecond(), new Rotation2d(Units.degreesToRadians(EncDegrees())));
+        return m_CurrentState;
     }
 
     public SwerveModuleState getDesiredState(){
 
-        desiredState = new SwerveModuleState(setPointDrive, new Rotation2d(Units.degreesToRadians(setPointTurn)));
-        return desiredState;
+        m_DesiredState = new SwerveModuleState(setPointDrive, new Rotation2d(Units.degreesToRadians(setPointTurn)));
+        return m_DesiredState;
     }
 
     public double getVoltageDrive(){
@@ -143,6 +143,16 @@ public class SwerveModule {
 
         m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public double getSpeedDifference(){
+
+        return Math.abs(m_DesiredState.speedMetersPerSecond - m_CurrentState.speedMetersPerSecond);
+    }
+
+    public double getAngleDifference(){
+
+        return Math.abs(m_DesiredState.angle.getDegrees() - m_CurrentState.angle.getDegrees());
     }
 
     public void setDrive(double speed){
