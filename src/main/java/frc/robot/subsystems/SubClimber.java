@@ -49,12 +49,12 @@ public class SubClimber extends SubsystemBase {
 
   public void retractClimber(){
 
-    m_climber.set(0.7);
+    m_climber.set(0.9);
   }
 
   public void takeOutClimber(){
 
-    m_climber.set(-0.7);
+    m_climber.set(-0.9);
   }
 
   public void stopClimber(){

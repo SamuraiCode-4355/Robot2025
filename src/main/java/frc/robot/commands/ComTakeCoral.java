@@ -26,7 +26,7 @@ public class ComTakeCoral extends Command {
 
     if(coral){
 
-      SubElev.getInstance().shoot(-0.075);
+      SubElev.getInstance().shoot(-0.09);//-0.1
     }
   }
 
@@ -35,6 +35,7 @@ public class ComTakeCoral extends Command {
 
     SubElev.getInstance().stopShoot();
     coral = false;
+    SubElev.getInstance().isCoralShooting(false);
   }
 
   @Override

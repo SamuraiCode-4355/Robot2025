@@ -5,6 +5,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.revrobotics.ColorSensorV3;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,7 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
@@ -31,23 +33,22 @@ public class SubSwerve extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
-
   private Rotation2d robotOrientation;
-
   private ChassisSpeeds currentChassisState;
+
   private double robotVelocity;
+  private double setPSpeed;
+  private double[] swerveStates;
+
  // private double[] robotPose;
 
   private Pigeon2 m_Gyro;
   private RobotConfig config;
-  private double setPSpeed;
-  private byte m_limitCurrentDrive;
-  private byte m_limitCurrentTurn;
-
-  private Timer cronoDrive;
+  private ColorSensorV3 mColorSensorV3;
+ /*  private Timer cronoDrive;
   private Timer cronoTurn;
   private boolean cronoDriveRunning;
-  private boolean cronoTurnRunning;
+  private boolean cronoTurnRunning;*/
 
   public SubSwerve() {
 
@@ -62,6 +63,7 @@ public class SubSwerve extends SubsystemBase {
 
     m_BR = new SwerveModule(SwerveConstants.kBRDriveID, SwerveConstants.kBRTurnID, SwerveConstants.kBREncoderID, 
      SwerveConstants.kBRDriveInverted, SwerveConstants.kBRTurnInverted, SwerveConstants.kBREncoderInverted);
+
 
     kinematics = new SwerveDriveKinematics(RobotConstants.kFL_Location, RobotConstants.kFR_Location,
       RobotConstants.kBL_Location, RobotConstants.kBR_Location);
@@ -99,11 +101,8 @@ public class SubSwerve extends SubsystemBase {
       this 
     );  
 
-    m_limitCurrentDrive = SwerveConstants.kLimitCurrentDrive;
-    m_limitCurrentTurn = SwerveConstants.kLimitCurrentTurn;
-
-    cronoDrive = new Timer();
-    cronoTurn = new Timer();
+    mColorSensorV3 = new ColorSensorV3(I2C.Port.kMXP);
+    swerveStates = new double[8];
   }
 
   public static SubSwerve getInstance(){
@@ -134,6 +133,11 @@ public class SubSwerve extends SubsystemBase {
   public Rotation2d robotOrientationRev(){
 
     return Rotation2d.fromDegrees(getHeadingReverse());
+  }
+
+  public Rotation2d frontRobot(){
+
+    return Rotation2d.fromDegrees(0.0);
   }
 
   public void resetGyro(){
@@ -195,70 +199,19 @@ public class SubSwerve extends SubsystemBase {
     m_BR.resetMetersTraveled();
   }
 
-  public void setBreak(){
-
-    m_FL.setBreak();
-    m_FR.setBreak();
-    m_BL.setBreak();
-    m_BR.setBreak();
-  }
-
-  public void setCoast(){
-
-    m_FL.setCoast();
-    m_FR.setCoast();
-    m_BL.setCoast();
-    m_BR.setCoast();
-  }
-
   public void setChassisSpeed(ChassisSpeeds desiredSpeed){
 
     SwerveModuleState[] newStates = kinematics.toSwerveModuleStates(desiredSpeed);
 
-    m_FL.setM_DesiredState(newStates[0]);
-    m_FR.setM_DesiredState(newStates[1]);
-    m_BL.setM_DesiredState(newStates[2]);
-    m_BR.setM_DesiredState(newStates[3]);
+    m_FL.setDesiredState(newStates[0]);
+    m_FR.setDesiredState(newStates[1]);
+    m_BL.setDesiredState(newStates[2]);
+    m_BR.setDesiredState(newStates[3]);
   }
 
-  public void setDrive(double speed){
+  public boolean coralStation(){
 
-    m_FL.setDrive(speed);
-    m_FR.setDrive(speed);
-    m_BL.setDrive(speed);
-    m_BR.setDrive(speed);
-  }
-
-  public void increaseCurrentDrive(){
-
-    m_limitCurrentDrive += 5;
-    setLimitCurrent();
-  }
-
-  public void decreaseCurrentDrive(){
-
-    m_limitCurrentDrive -= 5;
-    setLimitCurrent();
-  }
-
-  public void increaseCurrentTurn(){
-
-    m_limitCurrentTurn += 5;
-    setLimitCurrent();
-  }
-
-  public void decreaseCurrentTurn(){
-
-    m_limitCurrentTurn -= 5;
-    setLimitCurrent();
-  }
-
-  public void setLimitCurrent(){
-
-    m_FL.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
-    m_FR.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
-    m_BL.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
-    m_BR.setLimitCurrent(m_limitCurrentDrive, m_limitCurrentTurn);
+    return mColorSensorV3.getProximity() >= SwerveConstants.kCoralStationSensor;
   }
 
   public void stop(){
@@ -269,125 +222,36 @@ public class SubSwerve extends SubsystemBase {
     m_BR.stop();
   }
 
+  public boolean isUpElev(){
+
+    return SubClimber.getInstance().getEncoderElev() >= 1.5;
+  }
+
   @Override
   public void periodic() {
 
     if(odometry != null)
       odometry.update(robotOrientationRev(), getModulePositions());
 
-    double SwerveStates[] = {
-      m_FL.getCurrentState().angle.getRadians(),
-      m_FL.getCurrentState().speedMetersPerSecond,
-      m_FR.getCurrentState().angle.getRadians(),
-      m_FR.getCurrentState().speedMetersPerSecond,
-      m_BL.getCurrentState().angle.getRadians(),
-      m_BL.getCurrentState().speedMetersPerSecond,
-      m_BR.getCurrentState().angle.getRadians(),
-      m_BR.getCurrentState().speedMetersPerSecond
-    };
+    swerveStates[0] = m_FL.getCurrentState().angle.getRadians();
+    swerveStates[1] = m_FL.getCurrentState().speedMetersPerSecond;
+    swerveStates[2] = m_FR.getCurrentState().angle.getRadians();
+    swerveStates[3] = m_FR.getCurrentState().speedMetersPerSecond;
+    swerveStates[4] = m_BL.getCurrentState().angle.getRadians();
+    swerveStates[5] = m_BL.getCurrentState().speedMetersPerSecond;
+    swerveStates[6] = m_BR.getCurrentState().angle.getRadians();
+    swerveStates[7] = m_BR.getCurrentState().speedMetersPerSecond;
 
-    setPSpeed = m_FL.getDesiredState().speedMetersPerSecond +
-                m_FR.getDesiredState().speedMetersPerSecond +
-                m_BL.getDesiredState().speedMetersPerSecond +
-                m_BR.getDesiredState().speedMetersPerSecond;
+    setPSpeed = Math.abs(m_FL.getDesiredState().speedMetersPerSecond) +
+                Math.abs(m_FR.getDesiredState().speedMetersPerSecond) +
+                Math.abs(m_BL.getDesiredState().speedMetersPerSecond) +
+                Math.abs(m_BR.getDesiredState().speedMetersPerSecond);
 
-    SmartDashboard.putBoolean("setPoint 0", setPSpeed < 0.05);
-    SmartDashboard.putNumber("FL speed Dif", m_FL.getSpeedDifference());
-    SmartDashboard.putNumber("FL angle Dif", m_FL.getAngleDifference());
-    
-    if(setPSpeed < 0.05){
-
+    if(setPSpeed < 0.08)
       stop();
-    }
-    else{
 
-      if(m_FL.getSpeedDifference() >= 0.3){
-
-        if(!cronoDriveRunning){
-
-          cronoDrive.reset();
-          cronoDrive.start();
-          cronoDriveRunning = true;
-        }
-
-        if(cronoDrive.get() >= 4){
-
-          increaseCurrentDrive();
-          cronoDrive.stop();
-          cronoDrive.reset();
-          cronoDriveRunning = false;
-        }
-      }
-      else{
-
-        if(cronoDriveRunning){
-
-          cronoDrive.stop();
-          cronoDrive.reset();
-          cronoDriveRunning = false;
-        }
-      }
-
-      if(m_FL.getAngleDifference() >= 10){
-
-        if(!cronoTurnRunning){
-
-          cronoTurn.reset();
-          cronoTurn.start();
-          cronoTurnRunning = true;
-        }
-
-        if(cronoTurn.get() >= 3){
-
-          increaseCurrentTurn();
-          cronoTurn.stop();
-          cronoTurn.reset();
-          cronoTurnRunning = false;
-        }
-      }
-      else{
-
-        if(cronoTurnRunning){
-
-          cronoTurn.stop();
-          cronoTurn.reset();
-          cronoTurnRunning = false;
-        }
-      }
-    }
-
-    SmartDashboard.putNumberArray("Swerve States", SwerveStates);
+    SmartDashboard.putNumberArray("Swerve States", swerveStates);
     SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putNumber("Gyro Radians", Units.degreesToRadians(getHeading()));
-
-    SmartDashboard.putNumber("FL speed", m_FL.getCurrentState().speedMetersPerSecond);
-    SmartDashboard.putNumber("FR speed", m_FR.getCurrentState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BL speed", m_BL.getCurrentState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BR speed", m_BR.getCurrentState().speedMetersPerSecond);
-
-    SmartDashboard.putNumber("FL SetP Speed", m_FL.getDesiredState().speedMetersPerSecond);
-    SmartDashboard.putNumber("FR setP Speed", m_FR.getDesiredState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BL setP Speed", m_BL.getDesiredState().speedMetersPerSecond);
-    SmartDashboard.putNumber("BR setP Speed", m_BR.getDesiredState().speedMetersPerSecond);
-
-    SmartDashboard.putNumber("FL Voltage", m_FL.getVoltageDrive());
-    SmartDashboard.putNumber("FR Voltage", m_FR.getVoltageDrive());
-    SmartDashboard.putNumber("BL Voltage", m_BL.getVoltageDrive());
-    SmartDashboard.putNumber("BR Voltage", m_BR .getVoltageDrive());
-
-    SmartDashboard.putNumber("Robot M/S", getRobotVelocity());
-    SmartDashboard.putNumber("Limit Current Drive", m_limitCurrentDrive);
-    SmartDashboard.putNumber("Limit Current Turn", m_limitCurrentTurn);
-
-    /*if(!(LimelightHelpers.getSetP_Orientation("") == null))
-      SmartDashboard.putNumber("SetP Orientation", LimelightHelpers.getSetP_Orientation(""));
-
-    robotPose = LimelightHelpers.getBotPose("");
-
-    if(!(robotPose == null)){
-
-      SmartDashboard.putNumber("x Pose", robotPose[0]);
-      SmartDashboard.putNumber("y Pose", robotPose[1]);
-    }*/
   }
 }

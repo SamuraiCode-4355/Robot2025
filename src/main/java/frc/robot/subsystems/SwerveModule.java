@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -60,9 +59,7 @@ public class SwerveModule {
         m_DrivePID = new PIDController(SwerveConstants.kP_PID_Drive, SwerveConstants.kI_PID_Drive, SwerveConstants.kD_PID_Drive);
         m_TurnPID = new PIDController(SwerveConstants.kP_PID_Turn, 0, 0);
 
-       // m_DrivePID.setTolerance(0.5);
         m_TurnPID.setTolerance(0.2);
-
         m_TurnPID.enableContinuousInput(0, 180);
 
         m_CurrentState = new SwerveModuleState();
@@ -89,7 +86,7 @@ public class SwerveModule {
         m_Drive.getEncoder().setPosition(0.0);
     }
 
-    public void setM_DesiredState(SwerveModuleState newState){
+    public void setDesiredState(SwerveModuleState newState){
 
         newState.optimize(getCurrentState().angle);
         newState.speedMetersPerSecond *= newState.angle.minus(getCurrentState().angle).getCos();
@@ -117,47 +114,6 @@ public class SwerveModule {
 
         m_DesiredState = new SwerveModuleState(setPointDrive, new Rotation2d(Units.degreesToRadians(setPointTurn)));
         return m_DesiredState;
-    }
-
-    public double getVoltageDrive(){
-
-        return m_Drive.getAppliedOutput();
-    }
-
-    public void setBreak(){
-
-        mDriveConfig.idleMode(IdleMode.kBrake);
-        m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
-
-    public void setCoast(){
-
-        mDriveConfig.idleMode(IdleMode.kCoast);
-        m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
-
-    public void setLimitCurrent(byte limitCurrentDrive, byte limitCurrentTurn){
-
-        mDriveConfig.smartCurrentLimit(limitCurrentDrive);
-        mTurnConfig.smartCurrentLimit(limitCurrentTurn);
-
-        m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
-
-    public double getSpeedDifference(){
-
-        return Math.abs(m_DesiredState.speedMetersPerSecond - m_CurrentState.speedMetersPerSecond);
-    }
-
-    public double getAngleDifference(){
-
-        return Math.abs(m_DesiredState.angle.getDegrees() - m_CurrentState.angle.getDegrees());
-    }
-
-    public void setDrive(double speed){
-
-        m_Drive.set(speed);
     }
 
     public void stop(){

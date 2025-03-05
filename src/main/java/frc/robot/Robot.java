@@ -30,10 +30,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    //SubLeds.getInstance().ledOff();
-    //SubSwerve.getInstance().setCoast();;
-    LimelightHelpers.setLEDMode_ForceOn("");
-
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -50,10 +46,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    LimelightHelpers.setLEDMode_ForceOff("");
-    //SubLeds.getInstance().ledOff();
-    //SubSwerve.getInstance().setCoast();
   }
 
   @Override

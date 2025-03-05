@@ -31,6 +31,7 @@ public class ComDownElev extends Command {
 
     SubElev.getInstance().enabledPID(false);
     SubElev.getInstance().stopShoot();
+    SubElev.getInstance().setIdleMode(false);
     finish = false;
   }
 

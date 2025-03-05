@@ -3,27 +3,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SubIntake;
 
-public class ComIntakeSuction extends Command {
+public class ComIntake extends Command {
 
-  private boolean x_Botton;
+  private boolean shoot;
 
-  public ComIntakeSuction(boolean X_Botton) {
+  public ComIntake(boolean shoot) {
 
     addRequirements(SubIntake.getInstance());
-
-    this.x_Botton = X_Botton;
+    this.shoot = shoot;
   }
 
   @Override
   public void initialize() {
 
-    if(x_Botton){
+    if(shoot){
 
-      SubIntake.getInstance().suction();
+      SubIntake.getInstance().shoot(0.6);
     }
     else{
 
-      SubIntake.getInstance().shoot();
+      SubIntake.getInstance().suction();
     }
   }
 
@@ -33,7 +32,7 @@ public class ComIntakeSuction extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    SubIntake.getInstance().stopSuction();
+    SubIntake.getInstance().stop();
   }
 
   @Override
