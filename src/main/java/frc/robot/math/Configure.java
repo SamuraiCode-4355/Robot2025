@@ -2,26 +2,47 @@ package frc.robot.math;
 
 public class Configure {
     
-    private static int side;
     private static int level;
-    
-    public static int getSide(){
-        return side;
-    }
+    private static int side;
+    private static boolean coral;
+    private static boolean autoShoot = true;
 
     public static int getLevel(){
         return level;
     }
 
-    public static void setSide(int Side){
-
-        if(Side == 1 || Side == 2)
-            side = Side;
-    }
-
     public static void setLevel(int Level){
 
-        if(Level >= 1 && Level <= 3)
-            level = Level;
+        level = Level;
+    }
+
+    public static int getSide(){
+
+        return side;
+    }
+
+    public static void setSide(int Side){
+
+        side = Side;
+    }
+
+    public static boolean getCoral(){
+
+        return coral;
+    }
+
+    public static void setCoral(boolean Coral){
+
+        coral = Coral;
+    }
+
+    public static boolean getAutoShoot(){
+
+        return autoShoot;
+    }
+
+    public static void setAutoShoot(boolean AutoShoot){
+
+        autoShoot = AutoShoot;
     }
 }

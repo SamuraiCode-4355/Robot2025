@@ -3,10 +3,9 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-//import frc.robot.subsystems.SubElev;
+import frc.robot.math.Configure;
 import frc.robot.subsystems.SubSwerve;
 
 public class ComSwerve extends Command {
@@ -19,7 +18,7 @@ public class ComSwerve extends Command {
   private double velRotation;
   private PIDController rotationPID;
   private ChassisSpeeds chassisSpeeds;
-  private boolean downElev;
+  //private boolean downElev;
 
   public ComSwerve(DoubleSupplier LeftX, DoubleSupplier LeftY, DoubleSupplier RightX) {
 
@@ -40,8 +39,8 @@ public class ComSwerve extends Command {
     initialOrientation = SubSwerve.getInstance().getHeading();
     rotationPID.reset();
     rotationPID.setSetpoint(initialOrientation);
-/* 
-    if(SubElev.getInstance().coralShooting() && SubElev.getInstance().isUpElev()){
+ 
+   /*  if(!Configure.getCoral() && SubSwerve.getInstance().isUpElev()){
 
       SubSwerve.getInstance().resetMetersTraveled();
       downElev = false;
@@ -67,14 +66,12 @@ public class ComSwerve extends Command {
     }
 
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-leftY.getAsDouble(), -leftX.getAsDouble(), velRotation,
-    SubSwerve.getInstance().robotOrientation());
-    /*(SubElev.getInstance().isUpElev() && !SubElev.getInstance().coralShooting()) ? 
-        SubSwerve.getInstance().frontRobot() : SubSwerve.getInstance().robotOrientation());*/
+    (SubSwerve.getInstance().isUpElev() && Configure.getCoral()) ? 
+        SubSwerve.getInstance().frontRobot() : SubSwerve.getInstance().robotOrientation());
     
     SubSwerve.getInstance().setChassisSpeed(chassisSpeeds);
 
-
-   /*  if(Math.abs(SubSwerve.getInstance().getFL_MTraveled()) >= 0.4 && !downElev){
+   /*  if(Math.abs(SubSwerve.getInstance().getFL_MTraveled()) >= 0.5 && !downElev){
 
       new ComDownElev().schedule();
       downElev = true;
@@ -85,7 +82,7 @@ public class ComSwerve extends Command {
   public void end(boolean interrupted) {
 
     SubSwerve.getInstance().stop();
-    downElev = false;
+    //downElev = false;
   }
 
   @Override

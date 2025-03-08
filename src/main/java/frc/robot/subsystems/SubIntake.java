@@ -19,6 +19,8 @@ public class SubIntake extends SubsystemBase {
   private SparkMaxConfig mIntakeConfig;
   private Rev2mDistanceSensor mDistanceSensor;
 
+  //------------------MÉTODO CONSTRUCTOR---------------------------
+
   public SubIntake() {
 
     mIntakeMotor = new SparkMax(IntakeConstants.kIntakeID, MotorType.kBrushless);
@@ -31,6 +33,8 @@ public class SubIntake extends SubsystemBase {
     mDistanceSensor.setAutomaticMode(true);
   }
 
+  //------------------------METODO DE FÁBRICA--------------------------
+
   public static SubIntake getInstance(){
 
     if(instance == null){
@@ -39,6 +43,16 @@ public class SubIntake extends SubsystemBase {
     }
     return instance;
   }
+
+  //--------------------------ATRIBUTOS----------------------------------
+
+  public boolean reefArrangement(){
+
+    return mDistanceSensor.getRange() >= IntakeConstants.kMinReefSensor 
+        && mDistanceSensor.GetRange() <= IntakeConstants.kMaxReefSensor;
+  }
+
+  //---------------------------MÉTODOS------------------------------------
 
   public void shoot(double speed){
 
@@ -55,14 +69,12 @@ public class SubIntake extends SubsystemBase {
     mIntakeMotor.set(0.0);
   }
 
-  public boolean reefArrangement(){
-
-    return mDistanceSensor.getRange() >= 3 &&  mDistanceSensor.GetRange() <= 9;
-  }
+  //------------------------MÉTODO PERIODICO-------------------------------
 
   @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Sensor2m", mDistanceSensor.getRange());
+    SmartDashboard.putBoolean("ReefArrangement", reefArrangement());
   }
 }

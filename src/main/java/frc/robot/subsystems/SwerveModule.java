@@ -37,6 +37,8 @@ public class SwerveModule {
     private double velDrive;
     private double velTurn;
 
+    //------------------MÉTODO CONSTRUCTOR--------------------------------
+
     public SwerveModule(byte DriveID, byte TurnID, byte EncoderID,
         boolean DriveInv, boolean TurnInv, boolean EncoderInv){
 
@@ -66,6 +68,8 @@ public class SwerveModule {
         m_DesiredState = new SwerveModuleState();
     }
 
+    //-----------------------ATRIBUTOS-----------------------------
+
     private double EncDegrees(){
 
         return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(), m_EncInv);
@@ -80,6 +84,20 @@ public class SwerveModule {
 
         return Conversions.driveTurnsToM(m_Drive.getEncoder().getPosition());
     }
+
+    public SwerveModuleState getCurrentState(){
+
+        m_CurrentState = new SwerveModuleState(speedMPerSecond(), new Rotation2d(Units.degreesToRadians(EncDegrees())));
+        return m_CurrentState;
+    }
+
+    public SwerveModuleState getDesiredState(){
+
+        m_DesiredState = new SwerveModuleState(setPointDrive, new Rotation2d(Units.degreesToRadians(setPointTurn)));
+        return m_DesiredState;
+    }
+
+    //---------------------------MÉTODOS-----------------------------------
 
     public void resetMetersTraveled(){
 
@@ -103,18 +121,6 @@ public class SwerveModule {
         m_Drive.set(velDrive);
         m_Turn.set(velTurn);
     }  
-
-    public SwerveModuleState getCurrentState(){
-
-        m_CurrentState = new SwerveModuleState(speedMPerSecond(), new Rotation2d(Units.degreesToRadians(EncDegrees())));
-        return m_CurrentState;
-    }
-
-    public SwerveModuleState getDesiredState(){
-
-        m_DesiredState = new SwerveModuleState(setPointDrive, new Rotation2d(Units.degreesToRadians(setPointTurn)));
-        return m_DesiredState;
-    }
 
     public void stop(){
 

@@ -18,7 +18,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.math.Conversions;
@@ -34,21 +33,16 @@ public class SubSwerve extends SubsystemBase {
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
   private Rotation2d robotOrientation;
-  private ChassisSpeeds currentChassisState;
 
-  private double robotVelocity;
   private double setPSpeed;
   private double[] swerveStates;
-
- // private double[] robotPose;
+  private SwerveModulePosition[] modulePositions;
 
   private Pigeon2 m_Gyro;
   private RobotConfig config;
   private ColorSensorV3 mColorSensorV3;
- /*  private Timer cronoDrive;
-  private Timer cronoTurn;
-  private boolean cronoDriveRunning;
-  private boolean cronoTurnRunning;*/
+
+  //-------------------------MÉTODO CONSTRUCTOR--------------------------
 
   public SubSwerve() {
 
@@ -97,13 +91,16 @@ public class SubSwerve extends SubsystemBase {
         new PIDConstants(2.2, 0.0, 0.0),  //2.8
         new PIDConstants(3.0 , 0.0, 0.0)), //3.8
       config,
-      () -> FieldConstants.redAlliance,
+      () -> RobotConstants.redAlliance,
       this 
     );  
 
     mColorSensorV3 = new ColorSensorV3(I2C.Port.kMXP);
     swerveStates = new double[8];
+    modulePositions = new SwerveModulePosition[4];
   }
+
+  //---------------MÉTODO DE FÁBRICA---------------------
 
   public static SubSwerve getInstance(){
 
@@ -114,10 +111,7 @@ public class SubSwerve extends SubsystemBase {
     return instance;
   }
 
-  public double getHeading(){
-
-    return Math.IEEEremainder(m_Gyro.getYaw().getValueAsDouble(),360);
-  }
+//---------------------ATRIBUTOS----------------------------
 
   public Rotation2d robotOrientation(){
 
@@ -125,43 +119,32 @@ public class SubSwerve extends SubsystemBase {
     return robotOrientation;
   }
 
-  public double getHeadingReverse(){
-
-    return Conversions.gyroReverse(getHeading());
-  }
-
   public Rotation2d robotOrientationRev(){
 
     return Rotation2d.fromDegrees(getHeadingReverse());
   }
-
+  
   public Rotation2d frontRobot(){
 
     return Rotation2d.fromDegrees(0.0);
   }
 
-  public void resetGyro(){
+  public double getHeading(){
 
-    m_Gyro.reset();
+    return Math.IEEEremainder(m_Gyro.getYaw().getValueAsDouble(),360);
   }
 
-  public double getRobotVelocity(){
+  public double getHeadingReverse(){
 
-    currentChassisState = kinematics.toChassisSpeeds(m_FL.getCurrentState(), m_FR.getCurrentState(), 
-                                                     m_BL.getCurrentState(), m_BR.getCurrentState());
-                                                     
-    robotVelocity = Math.hypot(currentChassisState.vyMetersPerSecond, currentChassisState.vxMetersPerSecond);
-    return robotVelocity;
+    return Conversions.gyroReverse(getHeading());
   }
 
   private SwerveModulePosition[] getModulePositions(){
 
-    SwerveModulePosition[] modulePositions = {
-      new SwerveModulePosition(m_FL.getMetersTraveled(), m_FL.getCurrentState().angle),
-      new SwerveModulePosition(m_FR.getMetersTraveled(), m_FR.getCurrentState().angle),
-      new SwerveModulePosition(m_BL.getMetersTraveled(), m_BL.getCurrentState().angle),
-      new SwerveModulePosition(m_BR.getMetersTraveled(), m_BR.getCurrentState().angle)
-    };
+    modulePositions[0] = new SwerveModulePosition(m_FL.getMetersTraveled(), m_FL.getCurrentState().angle);
+    modulePositions[1] = new SwerveModulePosition(m_FR.getMetersTraveled(), m_FR.getCurrentState().angle);
+    modulePositions[2] = new SwerveModulePosition(m_BL.getMetersTraveled(), m_BL.getCurrentState().angle);
+    modulePositions[3] = new SwerveModulePosition(m_BR.getMetersTraveled(), m_BR.getCurrentState().angle);
     return modulePositions;
   }
 
@@ -181,14 +164,26 @@ public class SubSwerve extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  public boolean coralStation(){
+
+    return mColorSensorV3.getProximity() >= SwerveConstants.kCoralStationSensor;
+  }
+
+  public boolean isUpElev(){
+
+    return SubClimber.getInstance().getEncoderElev() >= 1.5;
+  }
+
+  //----------------------------MÉTODOS--------------------------------
+
+  public void resetGyro(){
+
+    m_Gyro.reset();
+  }
+
   private void resetPose(Pose2d pose){
 
     odometry.resetPosition(robotOrientationRev(), getModulePositions(), pose);
-  }
-
-  public double getFL_MTraveled(){
-
-    return m_FL.getMetersTraveled();
   }
 
   public void resetMetersTraveled(){
@@ -209,11 +204,6 @@ public class SubSwerve extends SubsystemBase {
     m_BR.setDesiredState(newStates[3]);
   }
 
-  public boolean coralStation(){
-
-    return mColorSensorV3.getProximity() >= SwerveConstants.kCoralStationSensor;
-  }
-
   public void stop(){
 
     m_FL.stop();
@@ -222,10 +212,7 @@ public class SubSwerve extends SubsystemBase {
     m_BR.stop();
   }
 
-  public boolean isUpElev(){
-
-    return SubClimber.getInstance().getEncoderElev() >= 1.5;
-  }
+  //----------------------MÉTODO PERIODICO--------------------------------
 
   @Override
   public void periodic() {

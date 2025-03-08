@@ -9,8 +9,11 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.math.Configure;
 
 public class SubClimber extends SubsystemBase {
 
@@ -18,6 +21,9 @@ public class SubClimber extends SubsystemBase {
   private SparkMax m_climber;
   private SparkMaxConfig m_climberConfig;
   private RelativeEncoder m_EncoderElev;
+  private DigitalInput LimitSwitch;
+
+  //-------------------MÉTODO CONSTRUCTOR--------------------------
 
   public SubClimber() {
 
@@ -36,7 +42,11 @@ public class SubClimber extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     m_climber.configure(m_climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    LimitSwitch = new DigitalInput(ClimberConstants.kSwitchPort);
   }
+
+  //--------------------MÉTODO DE FABRICA-------------------------
 
   public static SubClimber getInstance(){
 
@@ -46,6 +56,20 @@ public class SubClimber extends SubsystemBase {
     }
     return instance;
   }
+
+  //----------------------ATRIBUTOS-------------------------------
+
+  public double getEncoderElev(){
+
+    return m_EncoderElev.getPosition();
+  }
+
+  public boolean isRobotUp(){
+    
+    return LimitSwitch.get();
+  }
+
+  //---------------------MÉTODOS----------------------------------
 
   public void retractClimber(){
 
@@ -62,11 +86,13 @@ public class SubClimber extends SubsystemBase {
     m_climber.set(0.0);
   }
 
-  public double getEncoderElev(){
-
-    return m_EncoderElev.getPosition();
-  }
+  //------------------MÉTODO PERIODICO---------------------------------
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+
+    SmartDashboard.putNumber("Level", Configure.getLevel());
+    SmartDashboard.putNumber("Side", Configure.getSide());
+    SmartDashboard.putBoolean("AutoShoot", Configure.getAutoShoot());
+  }
 }

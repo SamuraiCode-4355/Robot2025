@@ -23,7 +23,7 @@ public final class Constants {
 
     public static final boolean kFLDriveInverted = true;
     public static final boolean kFRDriveInverted = false;
-    public static final boolean kBLDriveInverted = false;
+    public static final boolean kBLDriveInverted = true;
     public static final boolean kBRDriveInverted = false;
 
     public static final boolean kFLTurnInverted = false;
@@ -71,19 +71,6 @@ public final class Constants {
         -kDistanceLeft_Right / 2);
 
     public static final byte kLedPort = 0;
-  }
-
-  public static class FieldConstants{
-
-   // public static final float[] kReefCenter = Conversions.coordinates(new float[]{-4.2f, 0.0f});
-
-    public static final float kTxLeft = -7.53f;
-    public static final float kTaLeft = 19.1f;
-
-    public static final float kTxRight = -16.8f;
-    public static final float kTaRight = 4.6f;
-
-    public static final float kDistanceFront = 0.67f;//57
     public static final boolean redAlliance = false;
   }
 
@@ -92,21 +79,28 @@ public final class Constants {
     public static final byte kLeftID = 9;
     public static final byte kRightID = 10;
     public static final byte kShooterID = 11;//11
-
-    public static final int kProximity = 280;
+    public static final byte kPhotoPort = 9;
 
     public static final float kLevel1 = 0f;//0
     public static final float kLevel2 = 3.55f; //3.75
     public static final float kLevel3 = 9.5f;//9.9
 
+    public static final float kP_PID = 0.5F;
+    public static final float kI_PID = 0.01F;
+    public static final float kD_PID = 0.001F;
+
     public static final byte kElevLimitCurrent = 40;
     public static final byte kShooterLimitCurrent = 30;
     public static final float maximumPower = 0.8f;
+    public static final float kSuctionPower = -0.09f;
+    public static final float kShootDown = -0.2f;
+    public static final float kShootUp = -0.45f;
   }
 
   public static class ClimberConstants{
 
     public static final byte kClimberID = 12;
+    public static final byte kSwitchPort = 0;
   }
 
   public static class IntakeConstants{
@@ -114,6 +108,10 @@ public final class Constants {
     public static final byte kIntakeID = 13;
     public static final byte kIntakeLimitCurrent = 25;
 
-    public static final float kReef = 5.0f;
+    public static final float kShootDown = 0.3f;
+    public static final float kShootUp = 0.15f;
+
+    public static final float kMinReefSensor = 0.0f;
+    public static final float kMaxReefSensor = 0.0f;
   }
 }

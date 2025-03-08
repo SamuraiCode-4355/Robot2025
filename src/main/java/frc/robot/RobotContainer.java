@@ -10,6 +10,7 @@ import frc.robot.commands.ComSwerve;
 import frc.robot.commands.ComTakeCoral;
 import frc.robot.math.Configure;
 import frc.robot.subsystems.SubElev;
+import frc.robot.subsystems.SubLeds;
 import frc.robot.subsystems.SubSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -25,6 +26,7 @@ public class RobotContainer {
 
   private final CommandXboxController m_DriveControl = new CommandXboxController(0);
   private final CommandXboxController m_MechaControl = new CommandXboxController(1);
+  private final CommandXboxController m_testControl = new CommandXboxController(2);
 
   private SendableChooser<Command> m_autoChooser;
 
@@ -49,7 +51,7 @@ public class RobotContainer {
 
     new Trigger(() -> SubElev.getInstance().coral()).onTrue(new ComTakeCoral());
 
-    new Trigger(()-> Math.abs(m_DriveControl.getLeftY()) > 0.08 || Math.abs(m_DriveControl.getLeftX()) > 0.08 ||
+    new Trigger(() -> Math.abs(m_DriveControl.getLeftY()) > 0.08 || Math.abs(m_DriveControl.getLeftX()) > 0.08 ||
     Math.abs(m_DriveControl.getRightX()) > 0.08).whileTrue(new ComSwerve(() -> m_DriveControl.getLeftX(),
                                                                          () -> m_DriveControl.getLeftY(),
                                                                          () -> m_DriveControl.getRightX()));
@@ -59,10 +61,13 @@ public class RobotContainer {
     m_DriveControl.rightBumper().whileTrue(new ComIntake(true));
 
     new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral());
-    new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComUpElev(0));
+    new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComUpElev());
 
-    m_MechaControl.pov(270).whileTrue(new ComClimber(false));
-    m_MechaControl.pov(90).whileTrue(new ComClimber(true));
+    m_MechaControl.leftBumper().whileTrue(new ComClimber(false));
+    m_MechaControl.rightBumper().whileTrue(new ComClimber(true));
+
+    m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setSide(1)));
+    m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setSide(2)));
 
     m_MechaControl.pov(180).onTrue(new ComDownElev());
 
@@ -71,14 +76,17 @@ public class RobotContainer {
     m_MechaControl.a().whileTrue(new InstantCommand(() -> Configure.setLevel(1)));
     m_MechaControl.b().whileTrue(new InstantCommand(() -> Configure.setLevel(2)));
     m_MechaControl.y().whileTrue(new InstantCommand(() -> Configure.setLevel(3)));
-  }
-/* 
-  public static boolean joystickActive(){
 
-    return Math.abs(m_DriveControl.getLeftY()) > 0.05 || Math.abs(m_DriveControl.getLeftX()) > 0.05 ||
-    Math.abs(m_DriveControl.getRightX()) > 0.05;
+    m_testControl.a().whileTrue(new InstantCommand(() -> SubLeds.heartbeatBlue()));
+    m_testControl.b().whileTrue(new InstantCommand(() -> SubLeds.lightChaseBlue()));
+    m_testControl.x().whileTrue(new InstantCommand(() -> SubLeds.shotBlue()));
+    m_testControl.y().whileTrue(new InstantCommand(() -> SubLeds.strobeBlue()));
+
+    m_testControl.pov(0).whileTrue(new InstantCommand(() -> SubLeds.turnOff()));
+    m_testControl.pov(90).whileTrue(new InstantCommand(() -> SubLeds.blueViolet()));
+    m_testControl.pov(270).whileTrue(new InstantCommand(() -> SubLeds.violet()));
   }
-*/
+
   public Command getAutonomousCommand() {
 
     return new SequentialCommandGroup(m_autoChooser.getSelected(), 

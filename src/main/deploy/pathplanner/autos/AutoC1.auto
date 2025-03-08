@@ -5,15 +5,65 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "C1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "UpElev2"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Right Reef"
+            "name": "Left Reef"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C2 "
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "UpElev2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C5"
           }
         }
       ]

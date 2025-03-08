@@ -4,7 +4,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -13,11 +12,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.math.Configure;
 
 public class SubElev extends SubsystemBase {
 
-  private static SubElev instance;
+  private static SubElev m_Instance;
 
   private SparkMax m_leftMotor;
   private SparkMax m_rightMotor;
@@ -29,10 +27,11 @@ public class SubElev extends SubsystemBase {
 
   private DigitalInput m_photoSensor;
   private PIDController m_pid;
-  private boolean enabledPID;
-  private double output;
-  private double maxOutput;
-  private boolean coralShooting;
+  private boolean m_EnabledPID;
+  private double m_Output;
+  private double m_MaxOutput;
+
+  //-----------------------MÉTODO CONSTRUCTOR--------------------------
 
   public SubElev() {
     
@@ -44,58 +43,54 @@ public class SubElev extends SubsystemBase {
     m_rightConfig = new SparkMaxConfig();
     m_shooterConfig = new SparkMaxConfig();
 
-    m_photoSensor = new DigitalInput(0);
+    m_photoSensor = new DigitalInput(ElevatorConstants.kPhotoPort);
     
-    m_pid = new PIDController(0.5, 0.01, 0.001);//0.25
+    m_pid = new PIDController(ElevatorConstants.kP_PID, ElevatorConstants.kI_PID, ElevatorConstants.kD_PID);
     m_pid.setTolerance(0.25);
 
     m_leftConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
     m_rightConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
-
-    m_rightConfig.encoder
-                .positionConversionFactor(1)
-                .velocityConversionFactor(1);
-
-    m_rightConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-    m_shooterConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(ElevatorConstants.kShooterLimitCurrent);
+    m_shooterConfig.smartCurrentLimit(ElevatorConstants.kShooterLimitCurrent);
 
     m_leftMotor.configure(m_leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightMotor.configure(m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_shooterMotor.configure(m_shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  //---------------------MÉTODO DE FABRICA------------------------------
+
   public static SubElev getInstance(){
 
-    if(instance == null){
+    if(m_Instance == null){
 
-      instance = new SubElev();
+      m_Instance = new SubElev();
     }
-    return instance;
+    return m_Instance;
   }
 
-  public void suction(double Power)
-  {
-    m_shooterMotor.set(Power);
+  //-----------------------ATRIBUTOS-------------------------------------
+
+  public boolean atSetPoint(){
+
+    return m_pid.atSetpoint();
   }
 
-  public void upElev(){
+  public boolean coral(){
 
-    m_leftMotor.set(0.5);
-    m_rightMotor.set(-0.5);
-  }
+    return m_photoSensor.get();
+  }  
 
-  public void downElev(){
+  //----------------------MÉTODOS------------------------------------------
 
-    m_leftMotor.set(-0.5);
-    m_rightMotor.set(0.5);
+  public void suction(){
+
+    m_shooterMotor.set(ElevatorConstants.kSuctionPower);
   }
 
   public void stopElev(){
 
-    m_leftMotor.set(0);
-    m_rightMotor.set(0);
+    m_leftMotor.set(0.0);
+    m_rightMotor.set(0.0);
   }
 
   public void shoot(double power){
@@ -108,14 +103,9 @@ public class SubElev extends SubsystemBase {
     m_shooterMotor.set(0.0);
   }
 
-  public boolean coral(){
-
-    return m_photoSensor.get();//m_colorSensor.getProximity() >= ElevatorConstants.kProximity;
-  }  
-
   public void enabledPID(boolean enable){
 
-    enabledPID = enable;
+    m_EnabledPID = enable;
   }
 
   public void setLevel(int level){
@@ -124,31 +114,26 @@ public class SubElev extends SubsystemBase {
 
       case 1:
         m_pid.setSetpoint(ElevatorConstants.kLevel1);
-        maxOutput = ElevatorConstants.maximumPower - 0.2;
+        m_MaxOutput = ElevatorConstants.maximumPower - 0.2;
         m_pid.setTolerance(1);
       break;
 
       case 2:
         m_pid.setSetpoint(ElevatorConstants.kLevel2);
-        maxOutput = ElevatorConstants.maximumPower;
+        m_MaxOutput = ElevatorConstants.maximumPower;
         m_pid.setTolerance(0.25);
       break;
 
       case 3:
         m_pid.setSetpoint(ElevatorConstants.kLevel3);
-        maxOutput = ElevatorConstants.maximumPower;
+        m_MaxOutput = ElevatorConstants.maximumPower;
         m_pid.setTolerance(0.25);
       break;
 
       default:
-        enabledPID = false;
+        m_EnabledPID = false;
       break;
     }
-  }
-
-  public boolean atSetPoint(){
-
-    return m_pid.atSetpoint();
   }
 
   public void setIdleMode(boolean Break){
@@ -160,51 +145,27 @@ public class SubElev extends SubsystemBase {
     m_rightMotor.configure(m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  /*public int getDistance(){
-
-    byte[] buffer = new byte[2];
-
-    distanceSensor.read(SENSOR_ADDRESS, 2, buffer);
-    int distance = ((buffer[0] & 0xFF) << 8) | (buffer[1] & 0xFF);
-    return distance;
-  }*/
-
-  public void isCoralShooting(boolean shooting){
-
-    coralShooting = shooting;
-  }
-
-  public boolean coralShooting(){
-
-    return coralShooting;
-  }
-
-  public boolean isUpElev(){
-
-    return SubClimber.getInstance().getEncoderElev() >= 1.5;
-  }
+  //----------------------MÉTODO PERIODICO----------------------------
 
   @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Encoder Elev", SubClimber.getInstance().getEncoderElev());
     SmartDashboard.putBoolean("Coral", coral());
-    SmartDashboard.putNumber("Level", Configure.getLevel());
-    SmartDashboard.putNumber("Side", Configure.getSide());
     SmartDashboard.putBoolean("AtSetPointElev", atSetPoint());
 
-    output = m_pid.calculate(SubClimber.getInstance().getEncoderElev());
+    m_Output = m_pid.calculate(SubClimber.getInstance().getEncoderElev());
 
-    if(output > maxOutput)
-      output = maxOutput;
+    if(m_Output > m_MaxOutput)
+      m_Output = m_MaxOutput;
 
-    if(output < maxOutput * -1)
-      output = maxOutput * -1;
+    if(m_Output < m_MaxOutput * -1)
+      m_Output = m_MaxOutput * -1;
 
-    if(enabledPID){
+    if(m_EnabledPID){
 
-      m_leftMotor.set(output);
-      m_rightMotor.set(-output);
+      m_leftMotor.set(m_Output);
+      m_rightMotor.set(-m_Output);
     }
     else{
 
