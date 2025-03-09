@@ -32,7 +32,11 @@ public class ComUpElev extends Command {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+
+   /*  if(SubElev.getInstance().atSetPoint())
+      finish = true;*/
+  }
 
   @Override
   public void end(boolean interrupted) {

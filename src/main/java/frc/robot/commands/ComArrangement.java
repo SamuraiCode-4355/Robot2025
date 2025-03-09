@@ -10,30 +10,37 @@ public class ComArrangement extends Command {
 
   private ChassisSpeeds chassisSpeeds;
   private float horizontalSpeed = 0.3f;
+  private boolean inverted;
 
   public ComArrangement() {
 
     addRequirements(SubSwerve.getInstance(), SubIntake.getInstance());
-
-    if(Configure.getSide() == 2)
-      horizontalSpeed *= -1;
-
-    chassisSpeeds = new ChassisSpeeds(0.0, horizontalSpeed, 0.0);
   }
 
   @Override
   public void initialize() {
 
-    SubSwerve.getInstance().setChassisSpeed(chassisSpeeds);
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+
+    if(Configure.getSide() == 2 && !inverted){
+
+      horizontalSpeed *= -1;
+      inverted = true;
+    }
+
+    chassisSpeeds = new ChassisSpeeds(0.08, horizontalSpeed, 0.0);
+
+    SubSwerve.getInstance().setChassisSpeed(chassisSpeeds);
+  }
 
   @Override
   public void end(boolean interrupted) {
 
     SubSwerve.getInstance().stop();
+    inverted = false;
 
     new ComShootCoral().schedule();
   }

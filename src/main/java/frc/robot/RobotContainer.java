@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.commands.ComArrangement;
 import frc.robot.commands.ComClimber;
 import frc.robot.commands.ComCoralStation;
 import frc.robot.commands.ComDownElev;
@@ -61,7 +62,7 @@ public class RobotContainer {
     m_DriveControl.rightBumper().whileTrue(new ComIntake(true));
 
     new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral());
-    new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComUpElev());
+    new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComArrangement());
 
     m_MechaControl.leftBumper().whileTrue(new ComClimber(false));
     m_MechaControl.rightBumper().whileTrue(new ComClimber(true));
@@ -69,6 +70,7 @@ public class RobotContainer {
     m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setSide(1)));
     m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setSide(2)));
 
+    m_MechaControl.pov(0).onTrue(new ComUpElev());
     m_MechaControl.pov(180).onTrue(new ComDownElev());
 
     new Trigger(() -> m_MechaControl.getRightTriggerAxis() > 0.1).onTrue(new ComTakeCoral());

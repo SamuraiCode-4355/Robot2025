@@ -21,9 +21,9 @@ public final class Constants {
     public static final byte kBLEncoderID = 23;
     public static final byte kBREncoderID = 24;
 
-    public static final boolean kFLDriveInverted = true;
-    public static final boolean kFRDriveInverted = false;
-    public static final boolean kBLDriveInverted = true;
+    public static final boolean kFLDriveInverted = false;
+    public static final boolean kFRDriveInverted = true;
+    public static final boolean kBLDriveInverted = false;
     public static final boolean kBRDriveInverted = false;
 
     public static final boolean kFLTurnInverted = false;
@@ -79,11 +79,11 @@ public final class Constants {
     public static final byte kLeftID = 9;
     public static final byte kRightID = 10;
     public static final byte kShooterID = 11;//11
-    public static final byte kPhotoPort = 9;
+    public static final byte kPhotoPort = 0;
 
     public static final float kLevel1 = 0f;//0
-    public static final float kLevel2 = 3.55f; //3.75
-    public static final float kLevel3 = 9.5f;//9.9
+    public static final float kLevel2 = 3.55f; //3.55 //6.51
+    public static final float kLevel3 = 9.5f;//9.5 // 10
 
     public static final float kP_PID = 0.5F;
     public static final float kI_PID = 0.01F;
@@ -100,7 +100,7 @@ public final class Constants {
   public static class ClimberConstants{
 
     public static final byte kClimberID = 12;
-    public static final byte kSwitchPort = 0;
+    public static final byte kSwitchPort = 1;
   }
 
   public static class IntakeConstants{
@@ -112,6 +112,6 @@ public final class Constants {
     public static final float kShootUp = 0.15f;
 
     public static final float kMinReefSensor = 0.0f;
-    public static final float kMaxReefSensor = 0.0f;
+    public static final float kMaxReefSensor = 6.0f;
   }
 }
