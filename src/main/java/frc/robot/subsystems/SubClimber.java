@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.math.Configure;
 
 public class SubClimber extends SubsystemBase {
@@ -69,6 +70,11 @@ public class SubClimber extends SubsystemBase {
     return LimitSwitch.get();
   }
 
+  public boolean isElevUp(){
+
+    return m_EncoderElev.getPosition() >= ElevatorConstants.kLevel2 - 1.5;
+  }
+
   //---------------------MÉTODOS----------------------------------
 
   public void retractClimber(){
@@ -94,5 +100,7 @@ public class SubClimber extends SubsystemBase {
     SmartDashboard.putNumber("Level", Configure.getLevel());
     SmartDashboard.putNumber("Side", Configure.getSide());
     SmartDashboard.putBoolean("AutoShoot", Configure.getAutoShoot());
+    SmartDashboard.putBoolean("Drive", Configure.getDrive());
+    SmartDashboard.putBoolean("Autonomo", Configure.getAutonomo());
   }
 }

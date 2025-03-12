@@ -5,8 +5,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.revrobotics.ColorSensorV3;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
@@ -40,12 +37,11 @@ public class SubSwerve extends SubsystemBase {
 
   private Pigeon2 m_Gyro;
   private RobotConfig config;
-  private ColorSensorV3 mColorSensorV3;
 
   //-------------------------MÉTODO CONSTRUCTOR--------------------------
 
   public SubSwerve() {
-
+    
     m_FL = new SwerveModule(SwerveConstants.kFLDriveID, SwerveConstants.kFLTurnID, SwerveConstants.kFLEncoderID,
       SwerveConstants.kFLDriveInverted, SwerveConstants.kFLTurnInverted, SwerveConstants.kFLEncoderInverted);
 
@@ -88,14 +84,13 @@ public class SubSwerve extends SubsystemBase {
       () -> kinematics.toChassisSpeeds(getModuleStates()),
       this::setChassisSpeed,
       new PPHolonomicDriveController(
-        new PIDConstants(2.2, 0.0, 0.0),  //2.8
-        new PIDConstants(3.0 , 0.0, 0.0)), //3.8
+        new PIDConstants(2.2, 0.0, 0.0),  //2.2  //5.0
+        new PIDConstants(3.0 , 0.0, 0.0)), //3.0 //5.0
       config,
       () -> RobotConstants.redAlliance,
       this 
     );  
 
-    mColorSensorV3 = new ColorSensorV3(I2C.Port.kMXP);
     swerveStates = new double[8];
     modulePositions = new SwerveModulePosition[4];
   }
@@ -164,17 +159,28 @@ public class SubSwerve extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  public boolean coralStation(){
-
-    return mColorSensorV3.getProximity() >= SwerveConstants.kCoralStationSensor;
-  }
-
   public boolean isUpElev(){
 
     return SubClimber.getInstance().getEncoderElev() >= 1.5;
   }
 
   //----------------------------MÉTODOS--------------------------------
+
+  public void initEncoders(){
+
+    m_FL.initEncoder();
+    m_FR.initEncoder();
+    m_BL.initEncoder();
+    m_BR.initEncoder();
+  }
+
+  public void setBreak(boolean Break){
+
+    m_FL.setBreak(Break);
+    m_FR.setBreak(Break);
+    m_BL.setBreak(Break);
+    m_BR.setBreak(Break);
+  }
 
   public void resetGyro(){
 
@@ -229,15 +235,18 @@ public class SubSwerve extends SubsystemBase {
     swerveStates[6] = m_BR.getCurrentState().angle.getRadians();
     swerveStates[7] = m_BR.getCurrentState().speedMetersPerSecond;
 
+    SmartDashboard.putNumber("FL Set P", m_FL.getDesiredState().speedMetersPerSecond);
+
     setPSpeed = Math.abs(m_FL.getDesiredState().speedMetersPerSecond) +
                 Math.abs(m_FR.getDesiredState().speedMetersPerSecond) +
                 Math.abs(m_BL.getDesiredState().speedMetersPerSecond) +
                 Math.abs(m_BR.getDesiredState().speedMetersPerSecond);
 
-    if(setPSpeed < 0.08)
+    if(setPSpeed < 0.08)//0.08
       stop();
 
     SmartDashboard.putNumberArray("Swerve States", swerveStates);
+    SmartDashboard.putNumber("BR Angle", m_BR.getCurrentState().angle.getDegrees());
     SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putNumber("Gyro Radians", Units.degreesToRadians(getHeading()));
   }

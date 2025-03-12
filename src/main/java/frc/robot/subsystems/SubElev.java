@@ -29,7 +29,7 @@ public class SubElev extends SubsystemBase {
   private PIDController m_pid;
   private boolean m_EnabledPID;
   private double m_Output;
-  private double m_MaxOutput;
+ // private double m_MaxOutput;
 
   //-----------------------MÉTODO CONSTRUCTOR--------------------------
 
@@ -80,6 +80,11 @@ public class SubElev extends SubsystemBase {
     return m_photoSensor.get();
   }  
 
+  public double encoderElev(){
+
+    return SubClimber.getInstance().getEncoderElev();
+  }
+
   //----------------------MÉTODOS------------------------------------------
 
   public void suction(){
@@ -112,22 +117,26 @@ public class SubElev extends SubsystemBase {
 
     switch(level){
 
-      case 1:
-        m_pid.setSetpoint(ElevatorConstants.kLevel1);
-        m_MaxOutput = ElevatorConstants.maximumPower - 0.3;
+      case 0:
         m_pid.setTolerance(0.7);
+        m_pid.setSetpoint(ElevatorConstants.kLevel0);
+      break;
+
+      case 1:
+        m_pid.setTolerance(0.25);  
+        m_pid.setSetpoint(ElevatorConstants.kLevel1);       
       break;
 
       case 2:
         m_pid.setSetpoint(ElevatorConstants.kLevel2);
-        m_MaxOutput = ElevatorConstants.maximumPower;
         m_pid.setTolerance(0.25);
+        //m_MaxOutput = ElevatorConstants.maximumPower;   
       break;
 
       case 3:
         m_pid.setSetpoint(ElevatorConstants.kLevel3);
-        m_MaxOutput = ElevatorConstants.maximumPower;
         m_pid.setTolerance(0.25);
+        //m_MaxOutput = ElevatorConstants.maximumPower;
       break;
 
       default:
@@ -156,11 +165,11 @@ public class SubElev extends SubsystemBase {
 
     m_Output = m_pid.calculate(SubClimber.getInstance().getEncoderElev());
 
-    if(m_Output > m_MaxOutput)
-      m_Output = m_MaxOutput;
+    if(m_Output > ElevatorConstants.maximumPower)
+      m_Output = ElevatorConstants.maximumPower;
 
-    if(m_Output < m_MaxOutput * -1)
-      m_Output = m_MaxOutput * -1;
+    if(m_Output < ElevatorConstants.maximumPower * -1)
+      m_Output = ElevatorConstants.maximumPower * -1;
 
     if(m_EnabledPID){
 

@@ -6,6 +6,8 @@ public class Configure {
     private static int side;
     private static boolean coral;
     private static boolean autoShoot = true;
+    private static boolean drive = true;
+    private static boolean autonomo = true;
 
     public static int getLevel(){
         return level;
@@ -44,5 +46,25 @@ public class Configure {
     public static void setAutoShoot(boolean AutoShoot){
 
         autoShoot = AutoShoot;
+    }
+
+    public static boolean getDrive(){
+
+        return drive;
+    }
+
+    public static void setDrive(boolean Drive){
+
+        drive = Drive;
+    }
+
+    public static boolean getAutonomo(){
+
+        return autonomo;
+    }
+
+    public static void setAutonomo(boolean Auto){
+
+        autonomo = Auto;
     }
 }

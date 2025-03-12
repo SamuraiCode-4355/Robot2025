@@ -6,12 +6,15 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.math.Configure;
 import frc.robot.math.Conversions;
 
 public class SwerveModule {
@@ -36,6 +39,7 @@ public class SwerveModule {
 
     private double velDrive;
     private double velTurn;
+    private byte encoderID;
 
     //------------------MÉTODO CONSTRUCTOR--------------------------------
 
@@ -44,6 +48,8 @@ public class SwerveModule {
 
         m_Drive = new SparkMax(DriveID, MotorType.kBrushless);
         m_Turn = new SparkMax(TurnID, MotorType.kBrushless);
+
+        this.encoderID = EncoderID;
 
         mDriveConfig = new SparkMaxConfig();
         mTurnConfig = new SparkMaxConfig();
@@ -55,9 +61,7 @@ public class SwerveModule {
         m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.m_EncInv = EncoderInv;
-        
-        m_Encoder = new CANcoder(EncoderID);
-        
+                
         m_DrivePID = new PIDController(SwerveConstants.kP_PID_Drive, SwerveConstants.kI_PID_Drive, SwerveConstants.kD_PID_Drive);
         m_TurnPID = new PIDController(SwerveConstants.kP_PID_Turn, 0, 0);
 
@@ -72,6 +76,8 @@ public class SwerveModule {
 
     private double EncDegrees(){
 
+        if(m_Encoder == null)
+            return 0.0;     
         return Conversions.encToDegrees(m_Encoder.getAbsolutePosition().getValueAsDouble(), m_EncInv);
     }
 
@@ -104,6 +110,20 @@ public class SwerveModule {
         m_Drive.getEncoder().setPosition(0.0);
     }
 
+    public void setBreak(boolean Break){
+
+        mDriveConfig.idleMode(Break ? IdleMode.kBrake : IdleMode.kCoast);
+        m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public void initEncoder(){
+
+        if(m_Encoder == null){
+
+            m_Encoder = new CANcoder(encoderID);
+        }
+    }
+
     public void setDesiredState(SwerveModuleState newState){
 
         newState.optimize(getCurrentState().angle);
@@ -118,8 +138,8 @@ public class SwerveModule {
         velDrive = m_DrivePID.calculate(speedMPerSecond());
         velTurn = m_TurnPID.calculate(EncDegrees());
 
-        m_Drive.set(velDrive);
         m_Turn.set(velTurn);
+        m_Drive.set(Configure.getDrive() ? velDrive : 0.0);
     }  
 
     public void stop(){

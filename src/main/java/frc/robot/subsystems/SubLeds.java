@@ -43,6 +43,16 @@ public class SubLeds extends SubsystemBase {
     m_Led.set(0.89);
   }
 
+  public static void yellow(){
+
+
+  }
+
+  public static void red(){
+
+    
+  }
+
   @Override
   public void periodic() {}
 }

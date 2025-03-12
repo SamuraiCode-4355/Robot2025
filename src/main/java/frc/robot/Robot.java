@@ -4,7 +4,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.math.Configure;
 import frc.robot.subsystems.SubLeds;
+import frc.robot.subsystems.SubSwerve;
 
 public class Robot extends TimedRobot {
 
@@ -41,6 +43,9 @@ public class Robot extends TimedRobot {
     }
 
     SubLeds.turnOff();
+    SubSwerve.getInstance().setBreak(true);
+    SubSwerve.getInstance().initEncoders();
+    Configure.setAutonomo(true);
   }
 
   @Override
@@ -53,7 +58,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    Configure.setAutonomo(false);
     SubLeds.violet();
+    SubSwerve.getInstance().initEncoders();
+    SubSwerve.getInstance().setBreak(false);
   }
 
   @Override

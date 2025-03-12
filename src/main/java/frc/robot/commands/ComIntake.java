@@ -18,11 +18,13 @@ public class ComIntake extends Command {
 
     if(shoot){
 
+      SubIntake.getInstance().setBreak(false);
       SubIntake.getInstance().shoot(0.6);
     }
     else{
 
       SubIntake.getInstance().suction();
+      SubIntake.getInstance().setBreak(true);
     }
   }
 

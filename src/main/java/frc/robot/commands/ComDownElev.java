@@ -15,7 +15,7 @@ public class ComDownElev extends Command {
   @Override
   public void initialize() {
 
-    SubElev.getInstance().setLevel(1);
+    SubElev.getInstance().setLevel(0);
     SubElev.getInstance().enabledPID(true);
   }
 

@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "B1"
+            "pathName": "C1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Left Reef"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "B2"
+            "name": "Shoot"
           }
         }
       ]

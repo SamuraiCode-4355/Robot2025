@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.math.Configure;
 import frc.robot.subsystems.SubElev;
 import frc.robot.subsystems.SubIntake;
 
@@ -21,8 +20,12 @@ public class ComShootCoral extends Command {
 
     crono.reset();
     crono.start();
+  }
 
-    if(Configure.getLevel() == 1){
+  @Override
+  public void execute() {
+
+    /*if(Configure.getLevel() == 1){
 
       SubElev.getInstance().shoot(-0.2);//-0.3
       SubIntake.getInstance().shoot(0.3);
@@ -31,11 +34,10 @@ public class ComShootCoral extends Command {
 
       SubElev.getInstance().shoot(-0.45);//-0.3
       SubIntake.getInstance().shoot(0.15);
-    }
+    }*/
+    SubElev.getInstance().shoot(-0.2);//-0.3
+    SubIntake.getInstance().shoot(0.3);
   }
-
-  @Override
-  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
@@ -49,6 +51,6 @@ public class ComShootCoral extends Command {
 
   @Override
   public boolean isFinished() {
-    return crono.get() >= 0.7;
+    return crono.get() >= 1.3;
   }
 }

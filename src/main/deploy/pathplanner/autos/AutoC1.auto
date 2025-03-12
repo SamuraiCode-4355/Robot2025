@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "UpElev2"
-                }
-              }
-            ]
+            "pathName": "C1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Left Reef"
+            "name": "Shoot"
           }
         },
         {
@@ -36,34 +23,34 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "WaitCoral"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "C3"
+                  "name": "TakeCoral"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "UpElev2"
+                  "pathName": "C3"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "C4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "C5"
+            "name": "Shoot"
           }
         }
       ]

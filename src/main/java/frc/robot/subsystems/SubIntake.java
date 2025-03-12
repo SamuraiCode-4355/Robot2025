@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +27,7 @@ public class SubIntake extends SubsystemBase {
     mIntakeMotor = new SparkMax(IntakeConstants.kIntakeID, MotorType.kBrushless);
     mIntakeConfig = new SparkMaxConfig();
 
-    mIntakeConfig.smartCurrentLimit(IntakeConstants.kIntakeLimitCurrent);
+    mIntakeConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(IntakeConstants.kIntakeLimitCurrent);
     mIntakeMotor.configure(mIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     mDistanceSensor = new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
@@ -67,6 +68,12 @@ public class SubIntake extends SubsystemBase {
   public void stop(){
 
     mIntakeMotor.set(0.0);
+  }
+
+  public void setBreak(boolean Break){
+
+    mIntakeConfig.idleMode(Break ? IdleMode.kBrake : IdleMode.kCoast);
+    mIntakeMotor.configure(mIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   //------------------------MÉTODO PERIODICO-------------------------------

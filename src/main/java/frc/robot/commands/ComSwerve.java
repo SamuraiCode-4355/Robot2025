@@ -5,7 +5,6 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.math.Configure;
 import frc.robot.subsystems.SubSwerve;
 
 public class ComSwerve extends Command {
@@ -18,7 +17,6 @@ public class ComSwerve extends Command {
   private double velRotation;
   private PIDController rotationPID;
   private ChassisSpeeds chassisSpeeds;
-  //private boolean downElev;
 
   public ComSwerve(DoubleSupplier LeftX, DoubleSupplier LeftY, DoubleSupplier RightX) {
 
@@ -26,11 +24,11 @@ public class ComSwerve extends Command {
     this.leftY = LeftY;
     this.rightX = RightX;
 
-    rotationPID = new PIDController(0.025, 0.0, 0.0);
-    rotationPID.setTolerance(1);
+    rotationPID = new PIDController(0.02, 0.0, 0.0);//0.025
+    //rotationPID.setTolerance(1);
     rotationPID.enableContinuousInput(0, 180);
 
-    addRequirements(SubSwerve.getInstance());//, SubElev.getInstance());
+    addRequirements(SubSwerve.getInstance());
   }
 
   @Override
@@ -39,22 +37,12 @@ public class ComSwerve extends Command {
     initialOrientation = SubSwerve.getInstance().getHeading();
     rotationPID.reset();
     rotationPID.setSetpoint(initialOrientation);
- 
-   /*  if(!Configure.getCoral() && SubSwerve.getInstance().isUpElev()){
-
-      SubSwerve.getInstance().resetMetersTraveled();
-      downElev = false;
-    }
-    else{
-
-      downElev = true;
-    }*/
   }
 
   @Override
   public void execute() {
 
-    if(Math.abs(rightX.getAsDouble()) < 0.08){
+    if(Math.abs(rightX.getAsDouble()) < 0.1){
 
       velRotation = rotationPID.calculate(SubSwerve.getInstance().getHeading());
     }
@@ -65,24 +53,16 @@ public class ComSwerve extends Command {
       rotationPID.setSetpoint(initialOrientation);
     }
 
-    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-leftY.getAsDouble(), -leftX.getAsDouble(), velRotation,
-    (SubSwerve.getInstance().isUpElev() && Configure.getCoral()) ? 
-        SubSwerve.getInstance().frontRobot() : SubSwerve.getInstance().robotOrientation());
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-leftY.getAsDouble(), -leftX.getAsDouble(), 
+                                                          velRotation, SubSwerve.getInstance().robotOrientation());
     
     SubSwerve.getInstance().setChassisSpeed(chassisSpeeds);
-
-   /*  if(Math.abs(SubSwerve.getInstance().getFL_MTraveled()) >= 0.5 && !downElev){
-
-      new ComDownElev().schedule();
-      downElev = true;
-    }*/
   }
 
   @Override
   public void end(boolean interrupted) {
 
     SubSwerve.getInstance().stop();
-    //downElev = false;
   }
 
   @Override
