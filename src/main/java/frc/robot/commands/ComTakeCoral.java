@@ -15,7 +15,7 @@ public class ComTakeCoral extends Command {
   public void initialize() {
 
     SubElev.getInstance().suction();
-    //Prender leds azul
+    SubLeds.heartbeatBlue();
   }
 
   @Override

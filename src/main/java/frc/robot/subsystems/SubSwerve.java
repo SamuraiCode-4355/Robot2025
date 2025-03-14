@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
@@ -84,10 +85,16 @@ public class SubSwerve extends SubsystemBase {
       () -> kinematics.toChassisSpeeds(getModuleStates()),
       this::setChassisSpeed,
       new PPHolonomicDriveController(
-        new PIDConstants(2.2, 0.0, 0.0),  //2.2  //5.0
+        new PIDConstants(5.0, 0.0, 0.0),  //2.2  //5.0
         new PIDConstants(3.0 , 0.0, 0.0)), //3.0 //5.0
       config,
-      () -> RobotConstants.redAlliance,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
       this 
     );  
 

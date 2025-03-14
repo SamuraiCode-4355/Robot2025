@@ -54,7 +54,7 @@ public class ComSwerve extends Command {
     }
 
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-leftY.getAsDouble(), -leftX.getAsDouble(), 
-                                                          velRotation, SubSwerve.getInstance().robotOrientation());
+                                                          velRotation, SubSwerve.getInstance().robotOrientationRev());
     
     SubSwerve.getInstance().setChassisSpeed(chassisSpeeds);
   }

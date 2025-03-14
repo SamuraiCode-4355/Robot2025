@@ -1,19 +1,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.math.Configure;
 import frc.robot.subsystems.SubElev;
 import frc.robot.subsystems.SubIntake;
 
 public class ComUpElev extends Command {
 
   private boolean finish;
-  private int config;
+  private int level;
 
-  public ComUpElev(int Config) {
+  public ComUpElev(int Level) {
 
     addRequirements(SubElev.getInstance(), SubIntake.getInstance());
-    this.config = Config;
+    this.level = Level;
   }
 
   @Override
@@ -23,15 +22,28 @@ public class ComUpElev extends Command {
       finish = true;*/
 
     SubElev.getInstance().setIdleMode(true);
-    SubElev.getInstance().setLevel((config == 0) ? Configure.getLevel() : config);
-    SubElev.getInstance().enabledPID(true);
+    SubElev.getInstance().setLevel(level);
   }
 
   @Override
   public void execute() {
 
-     if(SubElev.getInstance().atSetPoint() && SubIntake.getInstance().reefArrangement())
+    if(!SubElev.getInstance().coral())
+      SubElev.getInstance().enabledPID(true);
+
+    /*if(Configure.getAutoShoot() && level != 1){
+
+      if(SubElev.getInstance().atSetPoint() && SubIntake.getInstance().reefArrangement()){
+
+        finish = true;
+      }
+    }
+    else{*/
+
+    if(SubElev.getInstance().atSetPoint()){
+
       finish = true;
+    }
   }
 
   @Override
@@ -41,8 +53,8 @@ public class ComUpElev extends Command {
     SubElev.getInstance().stopShoot();
     finish = false;
 
-    if(SubIntake.getInstance().reefArrangement())
-      new ComShootCoral().schedule();
+    /*if(SubIntake.getInstance().reefArrangement() && Configure.getAutoShoot() && level != 1)
+      new ComShootCoral().schedule();*/
   }
 
   @Override

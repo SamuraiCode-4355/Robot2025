@@ -45,6 +45,7 @@ public class Robot extends TimedRobot {
     SubLeds.turnOff();
     SubSwerve.getInstance().setBreak(true);
     SubSwerve.getInstance().initEncoders();
+    Configure.setAutoShoot(false);
     Configure.setAutonomo(true);
   }
 
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
     }
 
     Configure.setAutonomo(false);
+    Configure.setAutoShoot(true);
     SubLeds.violet();
     SubSwerve.getInstance().initEncoders();
     SubSwerve.getInstance().setBreak(false);

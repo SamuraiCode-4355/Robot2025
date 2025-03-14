@@ -42,7 +42,7 @@ public class ComArrangement extends Command {
     SubSwerve.getInstance().stop();
     inverted = false;
 
-    new ComShootCoral().schedule();
+    new ComShootCoral(false).schedule();
   }
 
   @Override

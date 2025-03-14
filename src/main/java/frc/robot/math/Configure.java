@@ -5,7 +5,7 @@ public class Configure {
     private static int level;
     private static int side;
     private static boolean coral;
-    private static boolean autoShoot = true;
+    private static boolean autoShoot;
     private static boolean drive = true;
     private static boolean autonomo = true;
 

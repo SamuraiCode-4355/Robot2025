@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.math.Configure;
 import frc.robot.math.Conversions;
 
 public class SwerveModule {
@@ -139,7 +138,7 @@ public class SwerveModule {
         velTurn = m_TurnPID.calculate(EncDegrees());
 
         m_Turn.set(velTurn);
-        m_Drive.set(Configure.getDrive() ? velDrive : 0.0);
+        m_Drive.set(velDrive);
     }  
 
     public void stop(){

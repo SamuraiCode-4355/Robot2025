@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Level1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC1(down)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DownElev"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "B",
+  "choreoAuto": false
+}

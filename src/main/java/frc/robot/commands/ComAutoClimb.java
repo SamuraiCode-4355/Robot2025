@@ -1,34 +1,31 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SubClimber;
 
 public class ComAutoClimb extends Command {
 
-  private BooleanSupplier FinishButton;
+  private Timer crono;
 
-  public ComAutoClimb(BooleanSupplier finishbutton) {
+  public ComAutoClimb() {
 
-    this.FinishButton = finishbutton;
     addRequirements(SubClimber.getInstance());
+    crono = new Timer();
   }
  
   @Override
   public void initialize() {
 
-    SubClimber.getInstance().retractClimber();
+    crono.reset();
+    crono.start();
+    SubClimber.getInstance().takeOutClimber();
   }
 
 
   @Override
   public void execute() {
 
-    if(SubClimber.getInstance().isRobotUp()){
-
-      SubClimber.getInstance().takeOutClimber();
-    }
   }
     
 
@@ -36,10 +33,12 @@ public class ComAutoClimb extends Command {
   public void end(boolean interrupted) {
 
     SubClimber.getInstance().stopClimber();
+    crono.stop();
+    crono.reset();
   }
 
   @Override
   public boolean isFinished() {
-    return FinishButton.getAsBoolean();
+    return crono.get() >= 0.5;
   }
 }

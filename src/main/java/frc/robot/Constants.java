@@ -58,7 +58,7 @@ public final class Constants {
     public static final float kDistanceLeft_Right = 0.74f;
 
     private static final float kMaxSpeedMPerSec = 4.5f;
-    private static final float kPowerPercent = 77;// Porcentaje de la velocidad
+    private static final float kPowerPercent = 85;// Porcentaje de la velocidad
     public static final float kPower = kMaxSpeedMPerSec * (kPowerPercent / 100);
     public static final Translation2d kFL_Location = new Translation2d(kDistanceFront_Back / 2,
          kDistanceLeft_Right / 2);
@@ -87,7 +87,7 @@ public final class Constants {
 
     public static final float kLevel2Seaweed = 0.0f;
 
-    public static final float kP_PID = 0.5F;
+    public static final float kP_PID = 0.5F;//0.5
     public static final float kI_PID = 0.01F;
     public static final float kD_PID = 0.001F;
 

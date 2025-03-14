@@ -118,7 +118,7 @@ public class SubElev extends SubsystemBase {
     switch(level){
 
       case 0:
-        m_pid.setTolerance(0.7);
+        m_pid.setTolerance(0.5);
         m_pid.setSetpoint(ElevatorConstants.kLevel0);
       break;
 
@@ -136,7 +136,6 @@ public class SubElev extends SubsystemBase {
       case 3:
         m_pid.setSetpoint(ElevatorConstants.kLevel3);
         m_pid.setTolerance(0.25);
-        //m_MaxOutput = ElevatorConstants.maximumPower;
       break;
 
       default:

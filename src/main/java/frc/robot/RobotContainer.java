@@ -1,12 +1,12 @@
 package frc.robot;
 
+import frc.robot.commands.ComAutoClimb;
 import frc.robot.commands.ComClimber;
 import frc.robot.commands.ComDownElev;
 import frc.robot.commands.ComUpElev;
 import frc.robot.commands.ComWaitCoral;
 import frc.robot.math.Configure;
 import frc.robot.commands.ComIntake;
-import frc.robot.commands.ComSeaweed;
 import frc.robot.commands.ComShootCoral;
 import frc.robot.commands.ComSwerve;
 import frc.robot.commands.ComTakeCoral;
@@ -43,11 +43,14 @@ public class RobotContainer {
       } catch (Exception e){}
     }).start();
 
-    NamedCommands.registerCommand("Shoot", new ComShootCoral());
+    NamedCommands.registerCommand("Shoot", new ComShootCoral(true));
+    NamedCommands.registerCommand("Level1", new ComUpElev(1));
     NamedCommands.registerCommand("Level2", new ComUpElev(2));
+    NamedCommands.registerCommand("Level3", new ComUpElev(3));
     NamedCommands.registerCommand("DownElev", new ComDownElev());
     NamedCommands.registerCommand("TakeCoral", new ComTakeCoral());
     NamedCommands.registerCommand("WaitCoral", new ComWaitCoral());
+    NamedCommands.registerCommand("Climber", new ComAutoClimb());
   }
 
   private void configureBindings() {
@@ -63,7 +66,7 @@ public class RobotContainer {
     //m_DriveControl.leftBumper().whileTrue(new ComIntake(false));
     //m_DriveControl.rightBumper().whileTrue(new ComIntake(true));
 
-    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral());
+    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral(false));
     //new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComArrangement());
 
     m_MechaControl.leftBumper().whileTrue(new ComClimber(false));
@@ -72,18 +75,18 @@ public class RobotContainer {
     new Trigger(() -> m_MechaControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComIntake(false));
     new Trigger(() -> m_MechaControl.getRightTriggerAxis() >= 0.1).whileTrue(new ComIntake(true));
 
-    m_MechaControl.pov(0).onTrue(new ComUpElev(0));
     m_MechaControl.pov(180).onTrue(new ComDownElev());
 
     //m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setDrive(true)));
     //m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setDrive(false)));
-    m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(false)));
-    m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(true)));
+    //m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(false)));
+    //m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(true)));
 
-    m_MechaControl.a().whileTrue(new InstantCommand(() -> Configure.setLevel(1)));
-    m_MechaControl.b().whileTrue(new InstantCommand(() -> Configure.setLevel(2)));
-    m_MechaControl.y().whileTrue(new InstantCommand(() -> Configure.setLevel(3)));
-    m_MechaControl.x().onTrue(new ComSeaweed(() -> m_MechaControl.x().getAsBoolean()));
+    m_MechaControl.a().onTrue(new ComUpElev(1));
+    m_MechaControl.b().onTrue(new ComUpElev(2));
+    m_MechaControl.y().onTrue(new ComUpElev(3));
+    
+   // m_MechaControl.pov(0).onTrue(new ComSeaweed(() -> m_MechaControl.pov(0).getAsBoolean()));
 
     m_testControl.a().whileTrue(new InstantCommand(() -> SubLeds.heartbeatBlue()));
     m_testControl.b().whileTrue(new InstantCommand(() -> SubLeds.lightChaseBlue()));
@@ -97,7 +100,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
 
-    return new SequentialCommandGroup(m_autoChooser.getSelected(), 
+    return new SequentialCommandGroup(new ComAutoClimb(), m_autoChooser.getSelected(), 
                                       new InstantCommand(() -> SubSwerve.getInstance().stop()));
   }
 }
