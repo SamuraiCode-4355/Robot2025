@@ -9,13 +9,11 @@ import frc.robot.subsystems.SubLeds;
 public class ComShootCoral extends Command {
 
   private Timer crono;
-  private boolean auto;
 
-  public ComShootCoral(boolean Auto) {
+  public ComShootCoral() {
 
     addRequirements(SubElev.getInstance(), SubIntake.getInstance());
     crono = new Timer();
-    this.auto = Auto;
   }
 
   @Override
@@ -40,7 +38,7 @@ public class ComShootCoral extends Command {
       SubIntake.getInstance().shoot(0.15);
     }*/
     SubElev.getInstance().shoot(-0.2);//-0.3
-    SubIntake.getInstance().shoot(auto ? 0.15 : 0.3);
+    SubIntake.getInstance().shoot(0.3);
   }
 
   @Override

@@ -43,7 +43,7 @@ public class RobotContainer {
       } catch (Exception e){}
     }).start();
 
-    NamedCommands.registerCommand("Shoot", new ComShootCoral(true));
+    NamedCommands.registerCommand("Shoot", new ComShootCoral());
     NamedCommands.registerCommand("Level1", new ComUpElev(1));
     NamedCommands.registerCommand("Level2", new ComUpElev(2));
     NamedCommands.registerCommand("Level3", new ComUpElev(3));
@@ -66,7 +66,7 @@ public class RobotContainer {
     //m_DriveControl.leftBumper().whileTrue(new ComIntake(false));
     //m_DriveControl.rightBumper().whileTrue(new ComIntake(true));
 
-    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral(false));
+    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral());
     //new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComArrangement());
 
     m_MechaControl.leftBumper().whileTrue(new ComClimber(false));

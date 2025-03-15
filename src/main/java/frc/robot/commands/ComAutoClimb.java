@@ -39,6 +39,6 @@ public class ComAutoClimb extends Command {
 
   @Override
   public boolean isFinished() {
-    return crono.get() >= 0.5;
+    return crono.get() >= 1;
   }
 }
