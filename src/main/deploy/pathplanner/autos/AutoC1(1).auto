@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C1"
+                  "pathName": "C1 (low)"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C2 "
+                  "pathName": "C1 (final)"
                 }
               },
               {
@@ -46,7 +46,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.7
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -59,18 +59,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "WaitCoral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "TakeCoral"
           }
         }
       ]

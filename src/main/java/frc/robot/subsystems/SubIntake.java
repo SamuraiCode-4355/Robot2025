@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -18,7 +15,6 @@ public class SubIntake extends SubsystemBase {
 
   private SparkMax mIntakeMotor;
   private SparkMaxConfig mIntakeConfig;
-  private Rev2mDistanceSensor mDistanceSensor;
 
   //------------------MÉTODO CONSTRUCTOR---------------------------
 
@@ -30,8 +26,6 @@ public class SubIntake extends SubsystemBase {
     mIntakeConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(IntakeConstants.kIntakeLimitCurrent);
     mIntakeMotor.configure(mIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    mDistanceSensor = new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
-    mDistanceSensor.setAutomaticMode(true);
   }
 
   //------------------------METODO DE FÁBRICA--------------------------
@@ -46,12 +40,6 @@ public class SubIntake extends SubsystemBase {
   }
 
   //--------------------------ATRIBUTOS----------------------------------
-
-  public boolean reefArrangement(){
-
-    return mDistanceSensor.getRange() >= IntakeConstants.kMinReefSensor 
-        && mDistanceSensor.GetRange() <= IntakeConstants.kMaxReefSensor;
-  }
 
   //---------------------------MÉTODOS------------------------------------
 
@@ -81,7 +69,5 @@ public class SubIntake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("Sensor2m", mDistanceSensor.getRange());
-    SmartDashboard.putBoolean("ReefArrangement", reefArrangement());
   }
 }

@@ -49,7 +49,7 @@ public class ComUpElev extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    SubElev.getInstance().enabledPID(false);
+   // SubElev.getInstance().enabledPID(false);
     SubElev.getInstance().stopShoot();
     finish = false;
 

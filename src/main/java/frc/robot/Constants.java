@@ -45,14 +45,13 @@ public final class Constants {
     public static final float kP_PID_Turn = 0.003f;
 
     public static final byte kLimitCurrentDrive = 45;//45
-    public static final byte kLimitCurrentTurn = 35;//30
-    public static final int kCoralStationSensor = 0;
+    public static final byte kLimitCurrentTurn = 35;//35
   } 
 
   public static class RobotConstants {
 
     public static final float kWheelRadio = 0.05f;
-    public static final double kWheelLenght = 2 * Math.PI * kWheelRadio;//0.28
+    public static final double kWheelLenght = 2 * Math.PI * kWheelRadio;
     public static final float kWheelTransmision = 6.75f;
     public static final float kDistanceFront_Back = 0.74f;
     public static final float kDistanceLeft_Right = 0.74f;
@@ -81,9 +80,9 @@ public final class Constants {
     public static final byte kPhotoPort = 0;
 
     public static final float kLevel0 = 0f;
-    public static final float kLevel1 = 1.78f;//0
-    public static final float kLevel2 = 4.3f; //4.3/3.55 //6.51
-    public static final float kLevel3 = 9.5f;//9.5 // 10
+    public static final float kLevel1 = 2.7f;//1.78
+    public static final float kLevel2 = 3.27f; //4.3
+    public static final float kLevel3 = 10.09f;//9.5 // 10
 
     public static final float kLevel2Seaweed = 0.0f;
 
@@ -103,6 +102,7 @@ public final class Constants {
 
     public static final byte kClimberID = 12;
     public static final byte kSwitchPort = 1;
+    public static final byte kServoPort = 1;
   }
 
   public static class IntakeConstants{

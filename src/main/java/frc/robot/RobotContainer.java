@@ -3,6 +3,7 @@ package frc.robot;
 import frc.robot.commands.ComAutoClimb;
 import frc.robot.commands.ComClimber;
 import frc.robot.commands.ComDownElev;
+import frc.robot.commands.ComDownFunnel;
 import frc.robot.commands.ComUpElev;
 import frc.robot.commands.ComWaitCoral;
 import frc.robot.math.Configure;
@@ -85,7 +86,8 @@ public class RobotContainer {
     m_MechaControl.a().onTrue(new ComUpElev(1));
     m_MechaControl.b().onTrue(new ComUpElev(2));
     m_MechaControl.y().onTrue(new ComUpElev(3));
-    
+    m_MechaControl.pov(270).onTrue(new ComDownFunnel());
+
    // m_MechaControl.pov(0).onTrue(new ComSeaweed(() -> m_MechaControl.pov(0).getAsBoolean()));
 
     m_testControl.a().whileTrue(new InstantCommand(() -> SubLeds.heartbeatBlue()));

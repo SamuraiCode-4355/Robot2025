@@ -47,6 +47,6 @@ public class ComArrangement extends Command {
 
   @Override
   public boolean isFinished() {
-    return SubIntake.getInstance().reefArrangement();
+    return false;
   }
 }

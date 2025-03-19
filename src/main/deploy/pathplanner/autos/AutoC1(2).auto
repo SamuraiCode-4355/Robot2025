@@ -11,13 +11,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C1"
+                  "pathName": "C1 (low)"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Level2"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TakeCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Level2"
+                      }
+                    }
+                  ]
                 }
               }
             ]
