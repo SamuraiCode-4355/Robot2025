@@ -24,7 +24,7 @@ public final class Constants {
     public static final boolean kFLDriveInverted = false;
     public static final boolean kFRDriveInverted = true;
     public static final boolean kBLDriveInverted = false;
-    public static final boolean kBRDriveInverted = false;
+    public static final boolean kBRDriveInverted = true;
 
     public static final boolean kFLTurnInverted = false;
     public static final boolean kFRTurnInverted = false;
@@ -80,9 +80,9 @@ public final class Constants {
     public static final byte kPhotoPort = 0;
 
     public static final float kLevel0 = 0f;
-    public static final float kLevel1 = 2.7f;//1.78
-    public static final float kLevel2 = 3.27f; //4.3
-    public static final float kLevel3 = 10.09f;//9.5 // 10
+    public static final float kLevel1 = 1f;//1.78 //2.7
+    public static final float kLevel2 = 4.3f; //4.3 //3.27
+    public static final float kLevel3 = 9.5f;//9.5 // 10.09
 
     public static final float kLevel2Seaweed = 0.0f;
 
@@ -93,9 +93,12 @@ public final class Constants {
     public static final byte kElevLimitCurrent = 45;
     public static final byte kShooterLimitCurrent = 30;
     public static final float maximumPower = 0.8f;
-    public static final float kSuctionPower = -0.09f;
+    public static final float kSuctionPower = -0.15f;
     public static final float kShootDown = -0.2f;
     public static final float kShootUp = -0.45f;
+
+    public static final float kMinReefSensor = 19f;
+    public static final float kMaxReefSensor = 28f;
   }
 
   public static class ClimberConstants{
@@ -103,6 +106,7 @@ public final class Constants {
     public static final byte kClimberID = 12;
     public static final byte kSwitchPort = 1;
     public static final byte kServoPort = 1;
+    public static final float kDistanceSensor = 1.5f;
   }
 
   public static class IntakeConstants{
@@ -112,8 +116,5 @@ public final class Constants {
 
     public static final float kShootDown = 0.3f;
     public static final float kShootUp = 0.15f;
-
-    public static final float kMinReefSensor = 0.0f;
-    public static final float kMaxReefSensor = 6f;//7
   }
 }

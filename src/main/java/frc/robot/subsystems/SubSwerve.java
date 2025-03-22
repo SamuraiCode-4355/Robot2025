@@ -253,7 +253,6 @@ public class SubSwerve extends SubsystemBase {
       stop();
 
     SmartDashboard.putNumberArray("Swerve States", swerveStates);
-    SmartDashboard.putNumber("BR Angle", m_BR.getCurrentState().angle.getDegrees());
     SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putNumber("Gyro Radians", Units.degreesToRadians(getHeading()));
   }

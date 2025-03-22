@@ -3,7 +3,6 @@ package frc.robot;
 import frc.robot.commands.ComAutoClimb;
 import frc.robot.commands.ComClimber;
 import frc.robot.commands.ComDownElev;
-import frc.robot.commands.ComDownFunnel;
 import frc.robot.commands.ComUpElev;
 import frc.robot.commands.ComWaitCoral;
 import frc.robot.math.Configure;
@@ -12,7 +11,6 @@ import frc.robot.commands.ComShootCoral;
 import frc.robot.commands.ComSwerve;
 import frc.robot.commands.ComTakeCoral;
 import frc.robot.subsystems.SubElev;
-import frc.robot.subsystems.SubLeds;
 import frc.robot.subsystems.SubSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -28,7 +26,6 @@ public class RobotContainer {
 
   private final CommandXboxController m_DriveControl = new CommandXboxController(0);
   private final CommandXboxController m_MechaControl = new CommandXboxController(1);
-  private final CommandXboxController m_testControl = new CommandXboxController(2);
 
   private SendableChooser<Command> m_autoChooser;
 
@@ -44,7 +41,7 @@ public class RobotContainer {
       } catch (Exception e){}
     }).start();
 
-    NamedCommands.registerCommand("Shoot", new ComShootCoral());
+    NamedCommands.registerCommand("Shoot", new ComShootCoral(true));
     NamedCommands.registerCommand("Level1", new ComUpElev(1));
     NamedCommands.registerCommand("Level2", new ComUpElev(2));
     NamedCommands.registerCommand("Level3", new ComUpElev(3));
@@ -64,40 +61,24 @@ public class RobotContainer {
                                                                          () -> m_DriveControl.getRightX()));
 
     m_DriveControl.x().whileTrue(new InstantCommand(() -> SubSwerve.getInstance().resetGyro()));
-    //m_DriveControl.leftBumper().whileTrue(new ComIntake(false));
-    //m_DriveControl.rightBumper().whileTrue(new ComIntake(true));
+    m_DriveControl.leftBumper().whileTrue(new InstantCommand(() -> Configure.setAutoShoot(false)));
+    m_DriveControl.rightBumper().whileTrue(new InstantCommand(() -> Configure.setAutoShoot(true)));
 
-    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral());
-    //new Trigger(() -> m_DriveControl.getRightTriggerAxis() >= 0.1).onTrue(new ComArrangement());
+    new Trigger(() -> m_DriveControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComShootCoral(false));
 
-    m_MechaControl.leftBumper().whileTrue(new ComClimber(false));
-    m_MechaControl.rightBumper().whileTrue(new ComClimber(true));
+    //------------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+------------------------------------------
+
+    m_MechaControl.leftBumper().onTrue(new ComClimber(() -> m_MechaControl.rightBumper().getAsBoolean(), () -> m_MechaControl.leftBumper().getAsBoolean()));
+    m_MechaControl.rightBumper().onTrue(new ComClimber(() -> m_MechaControl.rightBumper().getAsBoolean(), () -> m_MechaControl.leftBumper().getAsBoolean()));
 
     new Trigger(() -> m_MechaControl.getLeftTriggerAxis() >= 0.1).whileTrue(new ComIntake(false));
     new Trigger(() -> m_MechaControl.getRightTriggerAxis() >= 0.1).whileTrue(new ComIntake(true));
 
     m_MechaControl.pov(180).onTrue(new ComDownElev());
 
-    //m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setDrive(true)));
-    //m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setDrive(false)));
-    //m_MechaControl.pov(270).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(false)));
-    //m_MechaControl.pov(90).whileTrue(new InstantCommand(() -> Configure.setAutoShoot(true)));
-
     m_MechaControl.a().onTrue(new ComUpElev(1));
     m_MechaControl.b().onTrue(new ComUpElev(2));
     m_MechaControl.y().onTrue(new ComUpElev(3));
-    m_MechaControl.pov(270).onTrue(new ComDownFunnel());
-
-   // m_MechaControl.pov(0).onTrue(new ComSeaweed(() -> m_MechaControl.pov(0).getAsBoolean()));
-
-    m_testControl.a().whileTrue(new InstantCommand(() -> SubLeds.heartbeatBlue()));
-    m_testControl.b().whileTrue(new InstantCommand(() -> SubLeds.lightChaseBlue()));
-    m_testControl.x().whileTrue(new InstantCommand(() -> SubLeds.shotBlue()));
-    m_testControl.y().whileTrue(new InstantCommand(() -> SubLeds.strobeBlue()));
-
-    m_testControl.pov(0).whileTrue(new InstantCommand(() -> SubLeds.turnOff()));
-    m_testControl.pov(90).whileTrue(new InstantCommand(() -> SubLeds.blueViolet()));
-    m_testControl.pov(270).whileTrue(new InstantCommand(() -> SubLeds.violet()));
   }
 
   public Command getAutonomousCommand() {

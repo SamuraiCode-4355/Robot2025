@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.math.Configure;
 import frc.robot.math.Conversions;
 
 public class SwerveModule {
@@ -56,6 +55,9 @@ public class SwerveModule {
 
         mDriveConfig.inverted(DriveInv).smartCurrentLimit(SwerveConstants.kLimitCurrentDrive);
         mTurnConfig.inverted(TurnInv).smartCurrentLimit(SwerveConstants.kLimitCurrentTurn);
+
+        m_Drive.clearFaults();
+        m_Turn.clearFaults();
 
         m_Drive.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_Turn.configure(mTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

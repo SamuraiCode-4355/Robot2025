@@ -11,70 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Level2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C2 "
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.7
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DownElev"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "WaitCoral"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C3"
+                  "pathName": "C1 (low)"
                 }
               },
               {
@@ -112,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C4"
+                  "pathName": "C2 (low) "
                 }
               },
               {
@@ -144,9 +81,79 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3 (low)"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TakeCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Level1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "TakeCoral"
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3 (final)"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.7
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DownElev"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": []
           }
         }
       ]

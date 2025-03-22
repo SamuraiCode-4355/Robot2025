@@ -15,9 +15,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Level1"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "TakeCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Level1"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -36,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C2 "
+                  "pathName": "C2 (low) "
                 }
               },
               {
@@ -74,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C3"
+                  "pathName": "C3 (low)"
                 }
               },
               {
@@ -112,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C4"
+                  "pathName": "C4 (low)"
                 }
               },
               {

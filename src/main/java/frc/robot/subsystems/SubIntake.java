@@ -23,9 +23,11 @@ public class SubIntake extends SubsystemBase {
     mIntakeMotor = new SparkMax(IntakeConstants.kIntakeID, MotorType.kBrushless);
     mIntakeConfig = new SparkMaxConfig();
 
-    mIntakeConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(IntakeConstants.kIntakeLimitCurrent);
-    mIntakeMotor.configure(mIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    mIntakeConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(IntakeConstants.kIntakeLimitCurrent);
 
+    mIntakeMotor.clearFaults();
+
+    mIntakeMotor.configure(mIntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   //------------------------METODO DE FÁBRICA--------------------------

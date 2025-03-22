@@ -27,9 +27,9 @@ public class SubElev extends SubsystemBase {
 
   private DigitalInput m_photoSensor;
   private PIDController m_pid;
+
   private boolean m_EnabledPID;
   private double m_Output;
- // private double m_MaxOutput;
 
   //-----------------------MÉTODO CONSTRUCTOR--------------------------
 
@@ -48,10 +48,14 @@ public class SubElev extends SubsystemBase {
     m_pid = new PIDController(ElevatorConstants.kP_PID, ElevatorConstants.kI_PID, ElevatorConstants.kD_PID);
     m_pid.setTolerance(0.25);
 
-    m_leftConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
-    m_rightConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
-    m_shooterConfig.smartCurrentLimit(ElevatorConstants.kShooterLimitCurrent);
+    m_leftConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
+    m_rightConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(ElevatorConstants.kElevLimitCurrent);
+    m_shooterConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(ElevatorConstants.kShooterLimitCurrent);
 
+    m_leftMotor.clearFaults();
+    m_rightMotor.clearFaults();
+    m_shooterMotor.clearFaults();
+    
     m_leftMotor.configure(m_leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightMotor.configure(m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_shooterMotor.configure(m_shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -118,7 +122,7 @@ public class SubElev extends SubsystemBase {
     switch(level){
 
       case 0:
-        m_pid.setTolerance(0.5);
+        m_pid.setTolerance(0.8);
         m_pid.setSetpoint(ElevatorConstants.kLevel0);
       break;
 
@@ -144,14 +148,15 @@ public class SubElev extends SubsystemBase {
     }
   }
 
-  public void setIdleMode(boolean Break){
+ /*  public void setIdleModeElev(boolean Break){
 
     m_leftConfig.idleMode(Break ? IdleMode.kBrake : IdleMode.kCoast);
     m_rightConfig.idleMode(Break ? IdleMode.kBrake : IdleMode.kCoast);
 
     m_leftMotor.configure(m_leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightMotor.configure(m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
+  }*/
+
 
   //----------------------MÉTODO PERIODICO----------------------------
 
@@ -159,6 +164,7 @@ public class SubElev extends SubsystemBase {
   public void periodic() {
 
     SmartDashboard.putNumber("Encoder Elev", SubClimber.getInstance().getEncoderElev());
+
     SmartDashboard.putBoolean("Coral", coral());
     SmartDashboard.putBoolean("AtSetPointElev", atSetPoint());
 

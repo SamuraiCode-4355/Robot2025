@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -8,14 +9,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.math.Configure;
-import frc.robot.LimelightHelpers;
 
 public class SubClimber extends SubsystemBase {
 
@@ -24,8 +22,7 @@ public class SubClimber extends SubsystemBase {
   private SparkMax m_climber;
   private SparkMaxConfig m_climberConfig;
   private RelativeEncoder m_EncoderElev;
-  private DigitalInput LimitSwitch;
-  private Servo m_Servo;
+  private Rev2mDistanceSensor climberSensor;
 
   //-------------------MÉTODO CONSTRUCTOR--------------------------
 
@@ -46,10 +43,8 @@ public class SubClimber extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     m_climber.configure(m_climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    LimitSwitch = new DigitalInput(ClimberConstants.kSwitchPort);
-    m_Servo = new Servo(ClimberConstants.kServoPort);
-
+    climberSensor = new Rev2mDistanceSensor(Rev2mDistanceSensor.Port.kOnboard);
+    climberSensor.setAutomaticMode(true);
   }
 
   //--------------------MÉTODO DE FABRICA-------------------------
@@ -70,14 +65,14 @@ public class SubClimber extends SubsystemBase {
     return m_EncoderElev.getPosition();
   }
 
-  public boolean isRobotUp(){
-    
-    return LimitSwitch.get();
-  }
-
   public boolean isElevUp(){
 
     return m_EncoderElev.getPosition() >= ElevatorConstants.kLevel2 - 1.5;
+  }
+
+  public boolean robotUp(){
+
+    return climberSensor.getRange() > 0 && climberSensor.getRange() <= ClimberConstants.kDistanceSensor;
   }
 
   //---------------------MÉTODOS----------------------------------
@@ -97,37 +92,18 @@ public class SubClimber extends SubsystemBase {
     m_climber.set(0.0);
   }
 
-  public void setAngleServo(int angle){
-
-    m_Servo.setAngle(angle);
-  }
-
-  public void downFunnel(){
-
-    m_Servo.set(0.3);
-  }
-
-  public void stopServo(){
-
-    m_Servo.set(0.5);
-  }
-
   //------------------MÉTODO PERIODICO---------------------------------
 
   @Override
   public void periodic() {
 
     SmartDashboard.putNumber("Level", Configure.getLevel());
-    SmartDashboard.putNumber("Angle servo", m_Servo.getAngle());
-    SmartDashboard.putNumber("Position Servo", m_Servo.getPosition());
-
     SmartDashboard.putNumber("Side", Configure.getSide());
+    SmartDashboard.putNumber("climber sensor", climberSensor.getRange());
+
+    SmartDashboard.putBoolean("RobotUp", robotUp());
     SmartDashboard.putBoolean("AutoShoot", Configure.getAutoShoot());
     SmartDashboard.putBoolean("Drive", Configure.getDrive());
     SmartDashboard.putBoolean("Autonomo", Configure.getAutonomo());
-
-    SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
-    SmartDashboard.putNumber("TA", LimelightHelpers.getTA(""));
-    SmartDashboard.putNumber("TY", LimelightHelpers.getTY(""));
   }
 }

@@ -17,8 +17,8 @@ public class Robot extends TimedRobot {
   public Robot() {
 
     m_robotContainer = new RobotContainer();
-    SubLeds.turnOff();
     CameraServer.startAutomaticCapture();
+    SubLeds.turnOff();
   }
 
   @Override
